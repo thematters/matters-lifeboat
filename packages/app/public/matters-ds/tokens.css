@@ -1,0 +1,317 @@
+/* Auto-generated from tokens/tokens.json. Do not edit by hand. */
+/* Run `node tokens/build.mjs` to regenerate. */
+:root {
+  /* color */
+  --color-brand-legacy-green: #0D6763;
+  --color-brand-legacy-green-hover: #0A524F;
+  --color-brand-legacy-green-press: #074643;
+  --color-brand-legacy-green-lighter: #F2FAF7;
+  --color-brand-legacy-gold: #C0A46B;
+  --color-brand-legacy-gold-hover: #AB8840;
+  --color-brand-legacy-gold-press: #8A6B2C;
+  --color-brand-legacy-yellow-lighter: #FAF7F0;
+  --color-brand-new-purple: #7258FF;
+  --color-brand-new-green: #C3F432;
+  --color-primary-0: #F5F3FF;
+  --color-primary-100: #EAE7FF;
+  --color-primary-200: #DFDAFF;
+  --color-primary-300: #D5CFFE;
+  --color-primary-400: #B9AEF4;
+  --color-primary-500: #9280F5;
+  --color-primary-600: #735BF3;
+  --color-primary-700: #5A43E5;
+  --color-primary-800: #4B0AD6;
+  --color-primary-900: #32009B;
+  --color-secondary-0: #F2FBD9;
+  --color-secondary-100: #E8F8B7;
+  --color-secondary-200: #DAF48E;
+  --color-secondary-300: #C8EB62;
+  --color-secondary-400: #ACE725;
+  --color-secondary-500: #82DA0F;
+  --color-secondary-600: #47CA05;
+  --color-secondary-700: #379F03;
+  --color-secondary-800: #2D8700;
+  --color-secondary-900: #246802;
+  --color-info-0: #EDF9FF;
+  --color-info-100: #DCF3FE;
+  --color-info-200: #CAEEFF;
+  --color-info-300: #B0E6FF;
+  --color-info-400: #85D8FF;
+  --color-info-500: #30BEFF;
+  --color-info-600: #05AAF6;
+  --color-info-700: #028CCC;
+  --color-info-800: #006FA3;
+  --color-info-900: #015379;
+  --color-attention-0: #FFFCE1;
+  --color-attention-100: #FFF8BC;
+  --color-attention-200: #FFF27E;
+  --color-attention-300: #FFEC40;
+  --color-attention-400: #FCE200;
+  --color-attention-500: #EED601;
+  --color-attention-600: #DDC700;
+  --color-attention-700: #CAB600;
+  --color-attention-800: #B19F00;
+  --color-attention-900: #908200;
+  --color-grey-black: #333333;
+  --color-grey-grey-darker: #808080;
+  --color-grey-grey-dark: #999C9D;
+  --color-grey-grey: #B3B3B3;
+  --color-grey-grey-light: #DDDDDD;
+  --color-grey-grey-hover: #EDEDED;
+  --color-grey-grey-lighter: #F7F7F7;
+  --color-grey-white: #FFFFFF;
+  --color-grey-noir: #000000;
+  --color-function-positive: #5C9969;
+  --color-function-warn: #DBA34F;
+  --color-function-negative: #C85C41;
+  --color-function-negative-dark: #A04A34;
+  --color-function-heart: #E95656;
+  --color-function-top-up: #FFF4DC;
+  --color-function-top-up-darker: #FFE9B8;
+  --color-function-insufficient: #FFE8E8;
+  --color-freewrite-background: #F0F9FE;
+  --color-freewrite-text: #1999D0;
+  --color-freewrite-text-dark: #045898;
+  --color-freewrite-label: #83BAD1;
+  --color-decorative-brown: #C58463;
+  --color-decorative-orange: #F19B50;
+  --color-decorative-yellow: #E0B402;
+  --color-decorative-green: #70B388;
+  --color-decorative-purple: #A578D1;
+  --color-decorative-pink: #D577AA;
+  --color-decorative-red: #DC7871;
+  --color-external-like-coin: #40BFA5;
+
+  /* spacing (8pt grid + 2-unit fine-grain) */
+  --space-sp0: 0px;
+  --space-sp2: 2px;
+  --space-sp4: 4px;
+  --space-sp6: 6px;
+  --space-sp8: 8px;
+  --space-sp10: 10px;
+  --space-sp12: 12px;
+  --space-sp14: 14px;
+  --space-sp16: 16px;
+  --space-sp32: 32px;
+
+  /* effects (shadow / blur) */
+  --shadow-shadow1: 0 4px 8px 0 rgba(0,0,0,0.08);
+  --shadow-drawer: -8px 0 56px 0 rgba(0,0,0,0.08);
+  --shadow-dropdown: 0 4px 16px 0 rgba(0,0,0,0.12);
+  --shadow-dropdown-new: 0 12px 24px 0 rgba(0,0,0,0.12), 0 2px 12px 0 rgba(0,0,0,0.06);
+  --shadow-action-bar: 0 2px 4px 0 rgba(0,0,0,0.14), 0 -2px 12px 0 rgba(0,0,0,0.05);
+  --shadow-collection: inset 0 2px 2px 0 rgba(255,255,255,0.5), inset 0 -2px 4px 0 rgba(0,0,0,0.18), 0 1px 2px 0 rgba(37,19,10,0.11), 0 2px 4px 0 rgba(55,35,35,0.05), 0 4px 8px 0 rgba(55,55,55,0.03), 0 8px 16px 0 rgba(55,55,55,0.03);
+
+  /* typography primitives */
+  --font-family-ui: PingFang TC, system-ui, sans-serif;
+  --font-family-reading: Noto Serif TC, serif;
+}
+
+/* Typography utility classes. */
+/* Usage: <h1 class="ds-text-system-h1-semibold">…</h1> */
+.ds-text-system-money-semibold {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 48px;
+}
+.ds-text-system-money-medium {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 36px;
+  line-height: 48px;
+}
+.ds-text-system-money-regular {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 48px;
+}
+.ds-text-system-h1-semibold {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 36px;
+}
+.ds-text-system-h1-medium {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 36px;
+}
+.ds-text-system-h1-regular {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 36px;
+}
+.ds-text-system-h2-semibold {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 30px;
+}
+.ds-text-system-h2-medium {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 30px;
+}
+.ds-text-system-h2-regular {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 30px;
+}
+.ds-text-system-h3-semibold {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 28px;
+}
+.ds-text-system-h3-medium {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 28px;
+}
+.ds-text-system-h3-regular {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 28px;
+}
+.ds-text-system-body1-semibold {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+}
+.ds-text-system-body1-medium {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+}
+.ds-text-system-body1-regular {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+}
+.ds-text-system-body2-semibold {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 22px;
+}
+.ds-text-system-body2-medium {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+}
+.ds-text-system-body2-regular {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 22px;
+}
+.ds-text-system-small-semibold {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 18px;
+}
+.ds-text-system-small-medium {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 18px;
+}
+.ds-text-system-small-regular {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 18px;
+}
+.ds-text-article-title-desktop {
+  font-family: Noto Serif TC, serif;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 54px;
+  letter-spacing: 1.2px;
+}
+.ds-text-article-title-mobile {
+  font-family: Noto Serif TC, serif;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 36px;
+  letter-spacing: 1.2px;
+}
+.ds-text-article-summary-desktop {
+  font-family: Noto Serif TC, serif;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 35px;
+}
+.ds-text-article-summary-mobile {
+  font-family: Noto Serif TC, serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 30px;
+}
+.ds-text-article-header-desktop-h2 {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 1.7;
+}
+.ds-text-article-header-mobile-h2 {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 21px;
+  line-height: 1.7;
+}
+.ds-text-article-header-desktop-h3 {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.7;
+}
+.ds-text-article-header-mobile-h3 {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 19px;
+  line-height: 1.7;
+}
+.ds-text-article-body-semibold {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 1.75;
+}
+.ds-text-article-body-medium {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 1.75;
+}
+.ds-text-article-body-regular {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.75;
+}
+.ds-text-article-comment-medium {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.75;
+}
+.ds-text-article-comment-regular {
+  font-family: PingFang TC, system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.75;
+}

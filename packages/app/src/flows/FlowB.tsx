@@ -172,7 +172,7 @@ export function FlowB({ session, setSession, onBack }: Props) {
               maxHeight: 260,
               overflow: "auto",
               fontSize: 13,
-              border: "1px solid var(--color-ink-300)",
+              border: "1px solid var(--color-grey-grey-light)",
               borderRadius: "var(--radius-md)",
               padding: 12,
             }}
@@ -180,14 +180,14 @@ export function FlowB({ session, setSession, onBack }: Props) {
             {cids.slice(0, 50).map((cid) => (
               <div
                 key={cid}
-                style={{ padding: "4px 0", borderBottom: "1px solid var(--color-bg-100)" }}
+                style={{ padding: "4px 0", borderBottom: "1px solid var(--color-grey-grey-hover)" }}
               >
                 <div style={{ fontWeight: 500 }}>{cidNames.get(cid) ?? "(untitled)"}</div>
-                <code style={{ fontSize: 11, color: "var(--color-ink-500)" }}>{cid}</code>
+                <code style={{ fontSize: 11, color: "var(--color-grey-grey-darker)" }}>{cid}</code>
               </div>
             ))}
             {cids.length > 50 && (
-              <div style={{ padding: 8, color: "var(--color-ink-500)" }}>
+              <div style={{ padding: 8, color: "var(--color-grey-grey-darker)" }}>
                 ⋯還有 {cids.length - 50} 個，省略不顯示
               </div>
             )}
