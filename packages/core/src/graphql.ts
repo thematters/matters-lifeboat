@@ -21,6 +21,7 @@ const USER_ARTICLES_QUERY = `
             mediaHash
             iscnId
             state
+            license
             createdAt
             revisedAt
             summary
@@ -43,6 +44,7 @@ interface RawArticle {
   mediaHash: string;
   iscnId: string | null;
   state: string;
+  license: string | null;
   createdAt: string;
   revisedAt: string | null;
   summary: string;
@@ -164,6 +166,7 @@ function normalizeArticle(raw: RawArticle): MattersArticle {
     mediaHash: raw.mediaHash,
     iscnId: raw.iscnId && raw.iscnId.length > 0 ? raw.iscnId : null,
     state: raw.state,
+    license: raw.license ?? null,
     createdAt: raw.createdAt,
     revisedAt: raw.revisedAt,
     summary: raw.summary ?? "",

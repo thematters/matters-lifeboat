@@ -316,6 +316,24 @@ pre {
   border-left-color: var(--color-error-500);
 }
 
+.callout.license-notice {
+  background: var(--color-info-50);
+  border-left-color: var(--color-info-500);
+  margin: var(--sp-3) 0;
+}
+.license-notice .license-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+.license-notice .license-body {
+  font-size: 12px;
+  line-height: 1.6;
+}
+.license-notice ul {
+  list-style: disc;
+}
+
 .back {
   background: none;
   border: none;

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import JSZip from "jszip";
 import type { SharedSession } from "../App";
+import { BackupGate } from "../components/BackupGate";
 
 interface Props {
   session: SharedSession;
@@ -17,7 +18,7 @@ interface Props {
  * This intentionally avoids GitHub OAuth / device flow in MVP — that was the
  * biggest UX risk flagged in the usability spec.
  */
-export function FlowC({ session, onBack }: Props) {
+export function FlowC({ session, setSession, onBack }: Props) {
   const [building, setBuilding] = useState(false);
   const [siteZip, setSiteZip] = useState<Blob | null>(null);
   const [repoName, setRepoName] = useState(() =>
@@ -30,13 +31,12 @@ export function FlowC({ session, onBack }: Props) {
         <button className="back" onClick={onBack}>
           ← 回到選擇
         </button>
-        <div className="card">
-          <h2>需要先備份</h2>
-          <p>「立站」會把你的備份打成一個可直接上傳到 Cloudflare Pages 的 Astro 專案，所以請先跑 A 流程。</p>
-          <button className="btn btn-primary" onClick={onBack}>
-            去做備份 →
-          </button>
-        </div>
+        <BackupGate
+          title="🏝️ 立站：先備份再打包成站台"
+          reason="把備份重新打包成一個可直接拖到 Cloudflare Pages 的 Astro 專案。第一步是抓下備份——輸入 username 開始，跑完自動進入打包階段。"
+          onComplete={(zip) => setSession({ ...session, zip, user: { userName: zip.manifest.source.userName } as any })}
+          ctaLabel="繼續打包成站台 →"
+        />
       </>
     );
   }

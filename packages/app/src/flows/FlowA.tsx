@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { exportUser, type ExportProgress, type ZipResult } from "@matters/lifeboat-core";
 import { getEndpoint } from "../api";
+import { LicenseNotice } from "../components/LicenseNotice";
 import type { SharedSession } from "../App";
 
 interface Props {
@@ -110,6 +111,8 @@ export function FlowA({ session, setSession, onGotoB, onGotoC, onBack }: Props) 
             支援 <code>@mashbean</code>、<code>mashbean</code>、或整條 matters.town 網址
           </div>
         </div>
+
+        <LicenseNotice />
 
         <button
           className="btn btn-primary"

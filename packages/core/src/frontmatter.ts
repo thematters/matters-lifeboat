@@ -22,6 +22,7 @@ export function articleToPostFile(a: MattersArticle, userName: string): PostFile
     shortHash: a.shortHash,
     author: userName,
     state: a.state,
+    license: a.license ?? undefined,
     createdAt: a.createdAt,
     revisedAt: a.revisedAt ?? undefined,
     tags: a.tags,

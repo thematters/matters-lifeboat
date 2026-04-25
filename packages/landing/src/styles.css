@@ -96,7 +96,8 @@ code {
   color: var(--c-black); font-size: 18px;
 }
 .brand:hover { text-decoration: none; }
-.brand-mark { font-size: 24px; }
+.brand-mark { font-size: 22px; margin-left: -4px; }
+.brand-logo { width: 32px; height: 32px; border-radius: 6px; display: block; }
 .brand-name strong { color: var(--c-primary-700); }
 .nav { display: flex; align-items: center; gap: var(--sp-24); }
 .nav a { color: var(--c-grey-darker); font-size: 14px; }
@@ -236,6 +237,21 @@ code {
   margin-top: var(--sp-48);
   font-size: 14px; color: var(--c-grey-darker); text-align: center;
 }
+
+/* License */
+.license {
+  padding: var(--sp-64) 0 var(--sp-48);
+  background: var(--c-white);
+  border-top: 1px solid var(--c-grey-light);
+}
+.license h2 { font-family: var(--f-reading); }
+.license-list {
+  list-style: disc; padding: 0 0 0 var(--sp-24);
+  margin: var(--sp-16) 0 var(--sp-16);
+  display: grid; gap: var(--sp-8);
+  font-size: 14px; line-height: 1.7;
+}
+.license-list strong { color: var(--c-primary-700); }
 
 /* Trust */
 .trust {

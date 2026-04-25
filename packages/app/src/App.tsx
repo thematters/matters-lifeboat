@@ -28,7 +28,15 @@ export function App() {
       <header className="app-header">
         <div>
           <div className="app-title">
-            <span className="emoji">🛟</span>Matters 救生艇
+            <img
+              src="/app/matters-logo.png"
+              alt="Matters"
+              className="brand-logo"
+              width="32"
+              height="32"
+            />
+            <span className="lifeboat-mark" aria-hidden="true">🛟</span>
+            Matters 救生艇
           </div>
           <div className="app-subtitle">
             你的文字，你自己收著 · Your writing, in your own hands
@@ -94,7 +102,7 @@ function Picker({ onPick }: { onPick: (f: Flow) => void }) {
         <h2>選一條路線，從最簡單的開始</h2>
         <p>
           三條路，由你選。備份是好習慣 —— 就像刷牙、鎖門、定期把檔案同步到硬碟。
-          每一條路徑之間都可以切換，**你的選擇永遠只增不減**。
+          每一條路徑之間都可以切換，<strong>你的選擇永遠只增不減</strong>。
         </p>
         <div className="trust">
           <strong>為什麼你可以放心：</strong>

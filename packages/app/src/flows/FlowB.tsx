@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { PinataClient, type PinResult } from "@matters/lifeboat-core";
 import type { SharedSession } from "../App";
+import { BackupGate } from "../components/BackupGate";
 
 interface Props {
   session: SharedSession;
@@ -10,8 +11,8 @@ interface Props {
 
 type Stage = "intro" | "token" | "dry-run" | "pinning" | "done";
 
-export function FlowB({ session, onBack }: Props) {
-  const [stage, setStage] = useState<Stage>(() => (session.zip ? "intro" : "no-backup" as any));
+export function FlowB({ session, setSession, onBack }: Props) {
+  const [stage, setStage] = useState<Stage>("intro");
   const [token, setToken] = useState("");
   const [tokenStatus, setTokenStatus] = useState<"idle" | "checking" | "ok" | "bad">("idle");
   const [tokenError, setTokenError] = useState<string | null>(null);
@@ -33,13 +34,12 @@ export function FlowB({ session, onBack }: Props) {
         <button className="back" onClick={onBack}>
           ← 回到選擇
         </button>
-        <div className="card">
-          <h2>需要先備份</h2>
-          <p>「永存」流程會 pin 你備份裡列出的每一個 IPFS CID，所以請先跑 A 流程。</p>
-          <button className="btn btn-primary" onClick={onBack}>
-            去做備份 →
-          </button>
-        </div>
+        <BackupGate
+          title="⚓ 永存：先備份再 pin"
+          reason="把備份裡的每個 IPFS CID pin 一份到你自己的 Pinata 帳號。第一步是抓下備份——輸入 username 開始，跑完自動進入下一階段。"
+          onComplete={(zip) => setSession({ ...session, zip, user: { userName: zip.manifest.source.userName } as any })}
+          ctaLabel="繼續設定 Pinata token →"
+        />
       </>
     );
   }
