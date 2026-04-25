@@ -16,7 +16,7 @@ export function getEndpoint(): string {
   // Dev: use vite's server-side proxy (no CORS concerns, rewrites Origin).
   if (env.DEV) return "/api/graphql";
   // Prod: CF Worker proxy.
-  return "https://matters-lifeboat-proxy.mashbean.workers.dev/";
+  return "https://matters-lifeboat-proxy.matters-lab.workers.dev/";
 }
 
 export function makeClient() {
