@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { exportUser, type ExportProgress, type ZipResult } from "@matters/lifeboat-core";
 import { getEndpoint } from "../api";
 import { LicenseNotice } from "./LicenseNotice";
+import { Button } from "./Button";
+import { TextField } from "./TextField";
 
 interface Props {
   /** Heading shown above the username form. */
@@ -77,29 +79,31 @@ export function BackupGate({ title, reason, onComplete, initialUsername = "", ct
         <p>{reason}</p>
 
         <div style={{ marginBottom: 12 }}>
-          <input
-            className="input"
+          <TextField
             placeholder="@mashbean"
             value={username}
             disabled={running || done}
             onChange={(e) => setUsername(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && !running && !done && void run()}
+            helperText={
+              <>
+                支援 <code>@mashbean</code>、<code>mashbean</code>、或整條 matters.town 網址
+              </>
+            }
           />
-          <div className="helper" style={{ marginTop: 6, fontSize: 12 }}>
-            支援 <code>@mashbean</code>、<code>mashbean</code>、或整條 matters.town 網址
-          </div>
         </div>
 
         <LicenseNotice />
 
         {!done && (
-          <button
-            className="btn btn-primary"
+          <Button
+            variant="primary"
             onClick={() => void run()}
             disabled={running || !username.trim()}
+            loading={running}
           >
             {running ? "備份中⋯" : "開始備份 →"}
-          </button>
+          </Button>
         )}
 
         {error && <div className="callout error">{error}</div>}

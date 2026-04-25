@@ -1,5 +1,6 @@
-/* Auto-generated from tokens/tokens.json. Do not edit by hand. */
-/* Run `node tokens/build.mjs` to regenerate. */
+/* Auto-generated from packages/tokens/tokens.json. Do not edit by hand. */
+/* Run `node packages/tokens/build.mjs` to regenerate. */
+/* Note: --color-freewrite-* tokens live in freewrite.css (opt-in only). */
 :root {
   /* color */
   --color-brand-legacy-green: #0D6763;
@@ -69,10 +70,6 @@
   --color-function-top-up: #FFF4DC;
   --color-function-top-up-darker: #FFE9B8;
   --color-function-insufficient: #FFE8E8;
-  --color-freewrite-background: #F0F9FE;
-  --color-freewrite-text: #1999D0;
-  --color-freewrite-text-dark: #045898;
-  --color-freewrite-label: #83BAD1;
   --color-decorative-brown: #C58463;
   --color-decorative-orange: #F19B50;
   --color-decorative-yellow: #E0B402;

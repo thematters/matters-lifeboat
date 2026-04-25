@@ -1,0 +1,164 @@
+/* Button (DS 1.5 Buttons/Normal) — React + CSS Modules port.
+ *
+ * Sister implementation to components/buttons/normal/impl.css (vendored copy).
+ * Both must stay visually identical. Token references must match canonical
+ * --color-brand-new-purple (PM 2026-04-24 decision).
+ *
+ * Class names here are CSS-Module-scoped at build time; consumers see hashed
+ * classes. Do not depend on raw class names in this file.
+ */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sp6);
+  border: 1px solid transparent;
+  border-radius: 999px; /* pill — DS 1.5 default */
+  cursor: pointer;
+  font-family: var(--font-family-ui);
+  font-weight: 400;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-brand-new-purple);
+  outline-offset: 2px;
+}
+
+.button:disabled,
+.button[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.button[aria-busy="true"] {
+  cursor: progress;
+}
+
+/* ---- Sizes ---- */
+.large {
+  font-size: 16px;
+  line-height: 24px;
+  padding: var(--space-sp12) var(--space-sp32);
+  min-height: 48px;
+}
+.medium {
+  font-size: 14px;
+  line-height: 22px;
+  padding: var(--space-sp8) var(--space-sp16);
+  min-height: 36px;
+}
+.small {
+  font-size: 12px;
+  line-height: 18px;
+  padding: var(--space-sp4) var(--space-sp12);
+  min-height: 28px;
+}
+
+/* ---- Variant: Primary ---- */
+.primary {
+  background-color: var(--color-brand-new-purple);
+  color: var(--color-grey-white);
+}
+.primary:hover:not(:disabled):not([aria-disabled="true"]) {
+  background-color: var(--color-primary-700);
+}
+.primary:active:not(:disabled):not([aria-disabled="true"]) {
+  background-color: var(--color-primary-800);
+}
+
+/* ---- Variant: Secondary ---- */
+.secondary {
+  background-color: transparent;
+  color: var(--color-brand-new-purple);
+  border-color: var(--color-brand-new-purple);
+}
+.secondary:hover:not(:disabled):not([aria-disabled="true"]) {
+  background-color: var(--color-primary-0);
+}
+.secondary:active:not(:disabled):not([aria-disabled="true"]) {
+  background-color: var(--color-primary-100);
+}
+
+/* ---- Variant: Tertiary ---- */
+.tertiary {
+  background-color: transparent;
+  color: var(--color-brand-new-purple);
+  border-color: transparent;
+}
+.tertiary:hover:not(:disabled):not([aria-disabled="true"]) {
+  background-color: var(--color-primary-0);
+}
+.tertiary:active:not(:disabled):not([aria-disabled="true"]) {
+  background-color: var(--color-primary-100);
+}
+
+/* ---- Icon-only (Show Text=off) ---- */
+.iconOnly {
+  padding-left: var(--space-sp8);
+  padding-right: var(--space-sp8);
+  aspect-ratio: 1;
+}
+.iconOnly.large {
+  padding: var(--space-sp12);
+}
+.iconOnly.small {
+  padding: var(--space-sp4);
+}
+
+/* Full-width modifier (mobile) */
+.fullWidth {
+  width: 100%;
+}
+
+/* Icon slot */
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+}
+.icon svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+/* Loading spinner — replaces leftIcon when loading */
+.spinner {
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 999px;
+  animation: ds-button-spin 600ms linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes ds-button-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Hide label visually while keeping it accessible (for loading state preserving label) */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

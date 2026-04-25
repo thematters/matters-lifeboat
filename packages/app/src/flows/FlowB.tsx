@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { PinataClient, type PinResult } from "@matters/lifeboat-core";
 import type { SharedSession } from "../App";
 import { BackupGate } from "../components/BackupGate";
+import { Button } from "../components/Button";
+import { TextField } from "../components/TextField";
 
 interface Props {
   session: SharedSession;
@@ -111,18 +113,19 @@ export function FlowB({ session, setSession, onBack }: Props) {
             <br />
             ③ 你按「開始 pin」才真正執行
           </div>
-          <button className="btn btn-primary" onClick={() => setStage("token")}>
+          <Button variant="primary" onClick={() => setStage("token")}>
             我有 Pinata 帳號，開始 →
-          </button>
-          <button
-            className="btn btn-secondary"
-            style={{ marginLeft: 12 }}
-            onClick={() =>
-              window.open("https://app.pinata.cloud/developers/api-keys", "_blank")
-            }
-          >
-            我還沒有，去 Pinata 申請（3 分鐘）↗
-          </button>
+          </Button>
+          <span style={{ marginLeft: 12, display: "inline-block" }}>
+            <Button
+              variant="secondary"
+              onClick={() =>
+                window.open("https://app.pinata.cloud/developers/api-keys", "_blank")
+              }
+            >
+              我還沒有，去 Pinata 申請（3 分鐘）↗
+            </Button>
+          </span>
         </div>
       )}
 
@@ -137,25 +140,27 @@ export function FlowB({ session, setSession, onBack }: Props) {
             <strong>關於這個 token：</strong>
             我們只在你這個分頁的 sessionStorage 保存，關 tab 就立即清除、永遠不送到我們任何伺服器。你可以打開開發者工具親眼看它躺在哪裡。
           </div>
-          <textarea
-            className="input mono"
-            style={{ minHeight: 80 }}
+          <TextField
+            multiline
+            rows={4}
+            style={{ fontFamily: "var(--font-family-mono)", fontSize: 13 }}
             placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6..."
             value={token}
             onChange={(e) => setToken(e.target.value)}
+            error={tokenError ?? undefined}
           />
-          {tokenError && <div className="callout error">{tokenError}</div>}
           <div style={{ marginTop: 12, display: "flex", gap: 12 }}>
-            <button
-              className="btn btn-primary"
+            <Button
+              variant="primary"
               disabled={!token || tokenStatus === "checking"}
+              loading={tokenStatus === "checking"}
               onClick={() => void verifyToken()}
             >
               {tokenStatus === "checking" ? "跟 Pinata 打招呼⋯" : "測試這個 token →"}
-            </button>
-            <button className="btn btn-secondary" onClick={() => setStage("intro")}>
+            </Button>
+            <Button variant="secondary" onClick={() => setStage("intro")}>
               上一步
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -193,15 +198,15 @@ export function FlowB({ session, setSession, onBack }: Props) {
             )}
           </div>
           <div style={{ marginTop: 16, display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <button className="btn btn-primary" onClick={() => void runPin(false)}>
+            <Button variant="primary" onClick={() => void runPin(false)}>
               確認，開始 pin 全部 {cids.length} 個
-            </button>
-            <button className="btn btn-secondary" onClick={() => void runPin(true)}>
+            </Button>
+            <Button variant="secondary" onClick={() => void runPin(true)}>
               只 pin 第一個試試（baby step）
-            </button>
-            <button className="btn btn-ghost" onClick={() => setStage("token")}>
+            </Button>
+            <Button variant="tertiary" onClick={() => setStage("token")}>
               回上一步
-            </button>
+            </Button>
           </div>
         </div>
       )}

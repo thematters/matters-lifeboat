@@ -2,6 +2,8 @@ import { useState } from "react";
 import JSZip from "jszip";
 import type { SharedSession } from "../App";
 import { BackupGate } from "../components/BackupGate";
+import { Button, getButtonClassName } from "../components/Button";
+import { TextField } from "../components/TextField";
 
 interface Props {
   session: SharedSession;
@@ -119,33 +121,33 @@ export function FlowC({ session, setSession, onBack }: Props) {
         </div>
 
         <div style={{ marginTop: 20 }}>
-          <label style={{ fontSize: 13, color: "var(--color-grey-grey-darker)" }}>專案名稱（未來 repo 名）</label>
-          <input
-            className="input"
+          <TextField
+            label="專案名稱（未來 repo 名）"
             value={repoName}
             onChange={(e) => setRepoName(e.target.value.replace(/\s+/g, "-"))}
           />
         </div>
 
         <div style={{ marginTop: 20, display: "flex", gap: 12, flexWrap: "wrap" }}>
-          <button
-            className="btn btn-primary"
+          <Button
+            variant="primary"
             onClick={() => void buildSiteZip()}
             disabled={building}
+            loading={building}
           >
             {building ? "打包中⋯" : siteZip ? "重新打包" : "生成站台專案 →"}
-          </button>
+          </Button>
           {siteZip && (
-            <button className="btn btn-primary" onClick={download}>
+            <Button variant="primary" onClick={download}>
               ⬇️ 下載 {repoName}.zip
-            </button>
+            </Button>
           )}
           {siteZip && (
             <a
               href="https://dash.cloudflare.com/?to=/:account/pages/new/provider/direct-upload"
               target="_blank"
               rel="noreferrer"
-              className="btn btn-secondary"
+              className={getButtonClassName({ variant: "secondary" })}
             >
               打開 Cloudflare Pages ↗
             </a>
