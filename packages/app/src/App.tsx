@@ -29,14 +29,13 @@ export function App() {
         <div>
           <div className="app-title">
             <img
-              src="/app/matters-logo.png"
+              src="/app/matters-wordmark.svg"
               alt="Matters"
-              className="brand-logo"
-              width="32"
-              height="32"
+              className="brand-wordmark"
             />
+            <span className="brand-divider" aria-hidden="true">·</span>
             <span className="lifeboat-mark" aria-hidden="true">🛟</span>
-            Matters 救生艇
+            <span className="lifeboat-name">救生艇</span>
           </div>
           <div className="app-subtitle">
             你的文字，你自己收著 · Your writing, in your own hands

@@ -90,10 +90,22 @@ pre {
   font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 .app-title .emoji {
   margin-right: 6px;
 }
+.app-title .brand-wordmark {
+  height: 22px;
+  width: auto;
+  color: var(--color-ink-900, #111);
+  display: block;
+}
+.app-title .brand-divider { color: var(--color-ink-300, #ccc); font-weight: 400; }
+.app-title .lifeboat-mark { font-size: 20px; }
+.app-title .lifeboat-name { color: var(--color-brand-purple-500, var(--color-primary, #7258FF)); }
 .app-subtitle {
   color: var(--color-ink-500);
   font-size: 13px;

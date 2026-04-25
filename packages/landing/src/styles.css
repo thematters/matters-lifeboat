@@ -96,8 +96,12 @@ code {
   color: var(--c-black); font-size: 18px;
 }
 .brand:hover { text-decoration: none; }
-.brand-mark { font-size: 22px; margin-left: -4px; }
-.brand-logo { width: 32px; height: 32px; border-radius: 6px; display: block; }
+.brand-wordmark {
+  height: 22px; width: auto; display: block;
+  color: var(--c-black);
+}
+.brand-divider { color: var(--c-grey); font-size: 18px; margin: 0 -2px; }
+.brand-mark { font-size: 20px; }
 .brand-name strong { color: var(--c-primary-700); }
 .nav { display: flex; align-items: center; gap: var(--sp-24); }
 .nav a { color: var(--c-grey-darker); font-size: 14px; }
