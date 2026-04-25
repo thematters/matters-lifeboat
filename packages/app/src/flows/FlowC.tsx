@@ -119,7 +119,7 @@ export function FlowC({ session, setSession, onBack }: Props) {
         </div>
 
         <div style={{ marginTop: 20 }}>
-          <label style={{ fontSize: 13, color: "var(--color-ink-500)" }}>專案名稱（未來 repo 名）</label>
+          <label style={{ fontSize: 13, color: "var(--color-grey-grey-darker)" }}>專案名稱（未來 repo 名）</label>
           <input
             className="input"
             value={repoName}

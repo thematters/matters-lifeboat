@@ -1,34 +1,21 @@
-/* Design tokens from thematters/design-system (v2, 2026-04). */
+/* Layout, components, and page-local additions for Lifeboat.
+ *
+ * Canonical design tokens come from /matters-ds/tokens.css
+ * (vendored from thematters/design-system, DS 1.5 / Matters 2.0 New Palette).
+ * Update by re-copying that file from the design-system repo.
+ *
+ * Brand color reference: --color-brand-new-purple (PM 2026-04-24 decision).
+ */
+
 :root {
-  --color-brand-green-500: #0f766e;
-  --color-brand-green-400: #14b8a6;
-  --color-brand-green-50: #ecfdf5;
-  --color-ink-900: #0f172a;
-  --color-ink-700: #334155;
-  --color-ink-500: #64748b;
-  --color-ink-400: #94a3b8;
-  --color-ink-300: #cbd5e1;
-  --color-bg-50: #f8fafc;
-  --color-bg-100: #f1f5f9;
-  --color-white: #ffffff;
-  --color-attention-500: #d97706;
-  --color-attention-50: #fef3c7;
-  --color-error-500: #dc2626;
-  --color-error-50: #fee2e2;
-  --color-info-500: #2563eb;
-  --color-info-50: #dbeafe;
-
-  --font-sans: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", ui-sans-serif,
-    system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-
-  --sp-1: 4px;
-  --sp-2: 8px;
-  --sp-3: 12px;
-  --sp-4: 16px;
+  /* Page-local additions: values not in DS 1.5 canonical. */
+  --sp-1: var(--space-sp4);
+  --sp-2: var(--space-sp8);
+  --sp-3: var(--space-sp12);
+  --sp-4: var(--space-sp16);
   --sp-5: 20px;
   --sp-6: 24px;
-  --sp-8: 32px;
+  --sp-8: var(--space-sp32);
   --sp-10: 40px;
   --sp-12: 48px;
   --sp-16: 64px;
@@ -38,8 +25,10 @@
   --radius-lg: 16px;
 
   --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
-  --shadow-md: 0 2px 8px rgba(15, 23, 42, 0.08);
+  --shadow-md: var(--shadow-shadow1);
   --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.12);
+
+  --font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 * {
@@ -53,13 +42,13 @@ body,
   min-height: 100vh;
 }
 body {
-  font-family: var(--font-sans);
-  color: var(--color-ink-900);
-  background: var(--color-bg-50);
+  font-family: var(--font-family-ui);
+  color: var(--color-grey-black);
+  background: var(--color-grey-grey-lighter);
   -webkit-font-smoothing: antialiased;
 }
 a {
-  color: var(--color-brand-green-500);
+  color: var(--color-brand-new-purple);
   text-decoration: none;
 }
 a:hover {
@@ -71,7 +60,7 @@ button {
 }
 code,
 pre {
-  font-family: var(--font-mono);
+  font-family: var(--font-family-mono);
   font-size: 0.9em;
 }
 
@@ -100,20 +89,20 @@ pre {
 .app-title .brand-wordmark {
   height: 22px;
   width: auto;
-  color: var(--color-ink-900, #111);
+  color: var(--color-grey-black);
   display: block;
 }
-.app-title .brand-divider { color: var(--color-ink-300, #ccc); font-weight: 400; }
+.app-title .brand-divider { color: var(--color-grey-grey-light); font-weight: 400; }
 .app-title .lifeboat-mark { font-size: 20px; }
-.app-title .lifeboat-name { color: var(--color-brand-purple-500, var(--color-primary, #7258FF)); }
+.app-title .lifeboat-name { color: var(--color-brand-new-purple); }
 .app-subtitle {
-  color: var(--color-ink-500);
+  color: var(--color-grey-grey-darker);
   font-size: 13px;
 }
 
 .card {
-  background: var(--color-white);
-  border: 1px solid var(--color-ink-300);
+  background: var(--color-grey-white);
+  border: 1px solid var(--color-grey-grey-light);
   border-radius: var(--radius-lg);
   padding: var(--sp-6);
   box-shadow: var(--shadow-sm);
@@ -125,11 +114,11 @@ pre {
 }
 .card p {
   margin: 0 0 var(--sp-3);
-  color: var(--color-ink-700);
+  color: var(--color-grey-black);
   line-height: 1.7;
 }
 .card .helper {
-  color: var(--color-ink-500);
+  color: var(--color-grey-grey-darker);
   font-size: 13px;
 }
 
@@ -148,47 +137,47 @@ pre {
   transform: translateY(1px);
 }
 .btn-primary {
-  background: var(--color-brand-green-500);
-  color: white;
+  background: var(--color-brand-new-purple);
+  color: var(--color-grey-white);
 }
 .btn-primary:hover {
-  background: var(--color-brand-green-400);
+  background: var(--color-primary-700);
 }
 .btn-primary:disabled {
-  background: var(--color-ink-300);
+  background: var(--color-grey-grey-light);
   cursor: not-allowed;
 }
 .btn-secondary {
-  background: var(--color-white);
-  border-color: var(--color-ink-300);
-  color: var(--color-ink-700);
+  background: var(--color-grey-white);
+  border-color: var(--color-grey-grey-light);
+  color: var(--color-grey-black);
 }
 .btn-secondary:hover {
-  border-color: var(--color-brand-green-500);
-  color: var(--color-brand-green-500);
+  border-color: var(--color-brand-new-purple);
+  color: var(--color-brand-new-purple);
 }
 .btn-ghost {
   background: transparent;
-  color: var(--color-ink-500);
+  color: var(--color-grey-grey-darker);
   padding: 6px 10px;
 }
 
 .input {
   width: 100%;
   padding: 12px 14px;
-  border: 1px solid var(--color-ink-300);
+  border: 1px solid var(--color-grey-grey-light);
   border-radius: var(--radius-md);
   font-size: 16px;
   font-family: inherit;
-  background: var(--color-white);
+  background: var(--color-grey-white);
 }
 .input:focus {
   outline: none;
-  border-color: var(--color-brand-green-500);
-  box-shadow: 0 0 0 3px var(--color-brand-green-50);
+  border-color: var(--color-brand-new-purple);
+  box-shadow: 0 0 0 3px var(--color-primary-0);
 }
 .input.mono {
-  font-family: var(--font-mono);
+  font-family: var(--font-family-mono);
   font-size: 13px;
 }
 
@@ -200,20 +189,20 @@ pre {
 }
 .flow-card {
   padding: var(--sp-5);
-  border: 2px solid var(--color-ink-300);
+  border: 2px solid var(--color-grey-grey-light);
   border-radius: var(--radius-lg);
-  background: var(--color-white);
+  background: var(--color-grey-white);
   cursor: pointer;
   text-align: left;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 .flow-card:hover {
-  border-color: var(--color-brand-green-400);
+  border-color: var(--color-primary-400);
   box-shadow: var(--shadow-md);
 }
 .flow-card.selected {
-  border-color: var(--color-brand-green-500);
-  background: var(--color-brand-green-50);
+  border-color: var(--color-brand-new-purple);
+  background: var(--color-primary-0);
 }
 .flow-card .icon {
   font-size: 28px;
@@ -226,7 +215,7 @@ pre {
 }
 .flow-card .desc {
   font-size: 13px;
-  color: var(--color-ink-500);
+  color: var(--color-grey-grey-darker);
   line-height: 1.6;
 }
 .flow-card .skill {
@@ -235,26 +224,26 @@ pre {
   font-size: 11px;
   padding: 3px 8px;
   border-radius: 999px;
-  background: var(--color-bg-100);
-  color: var(--color-ink-700);
+  background: var(--color-grey-grey-hover);
+  color: var(--color-grey-black);
 }
 
 .trust {
-  background: var(--color-info-50);
+  background: var(--color-info-0);
   border-left: 3px solid var(--color-info-500);
   padding: var(--sp-3) var(--sp-4);
   border-radius: var(--radius-sm);
   font-size: 13px;
-  color: var(--color-ink-700);
+  color: var(--color-grey-black);
   margin-bottom: var(--sp-4);
   line-height: 1.6;
 }
 .trust strong {
-  color: var(--color-ink-900);
+  color: var(--color-grey-black);
 }
 
 .progress-outer {
-  background: var(--color-bg-100);
+  background: var(--color-grey-grey-hover);
   border-radius: 999px;
   height: 8px;
   overflow: hidden;
@@ -262,14 +251,14 @@ pre {
 }
 .progress-inner {
   height: 100%;
-  background: var(--color-brand-green-500);
+  background: var(--color-brand-new-purple);
   transition: width 0.3s;
 }
 
 .log {
-  font-family: var(--font-mono);
+  font-family: var(--font-family-mono);
   font-size: 11px;
-  background: var(--color-ink-900);
+  background: var(--color-grey-black);
   color: #d1d5db;
   padding: var(--sp-3) var(--sp-4);
   border-radius: var(--radius-md);
@@ -292,7 +281,7 @@ pre {
   margin-top: var(--sp-4);
 }
 .stat {
-  background: var(--color-bg-100);
+  background: var(--color-grey-grey-hover);
   padding: var(--sp-3);
   border-radius: var(--radius-md);
   text-align: center;
@@ -300,36 +289,36 @@ pre {
 .stat .v {
   font-size: 22px;
   font-weight: 700;
-  color: var(--color-brand-green-500);
+  color: var(--color-brand-new-purple);
 }
 .stat .k {
   font-size: 11px;
-  color: var(--color-ink-500);
+  color: var(--color-grey-grey-darker);
 }
 
 .callout {
   padding: var(--sp-3) var(--sp-4);
-  background: var(--color-attention-50);
-  border-left: 3px solid var(--color-attention-500);
+  background: var(--color-attention-0);
+  border-left: 3px solid var(--color-function-warn);
   border-radius: var(--radius-sm);
   font-size: 13px;
   margin: var(--sp-3) 0;
 }
 .callout.info {
-  background: var(--color-info-50);
+  background: var(--color-info-0);
   border-left-color: var(--color-info-500);
 }
 .callout.success {
-  background: var(--color-brand-green-50);
-  border-left-color: var(--color-brand-green-500);
+  background: var(--color-secondary-0);
+  border-left-color: var(--color-function-positive);
 }
 .callout.error {
-  background: var(--color-error-50);
-  border-left-color: var(--color-error-500);
+  background: var(--color-function-insufficient);
+  border-left-color: var(--color-function-negative);
 }
 
 .callout.license-notice {
-  background: var(--color-info-50);
+  background: var(--color-info-0);
   border-left-color: var(--color-info-500);
   margin: var(--sp-3) 0;
 }
@@ -349,21 +338,21 @@ pre {
 .back {
   background: none;
   border: none;
-  color: var(--color-ink-500);
+  color: var(--color-grey-grey-darker);
   padding: 0;
   margin-bottom: var(--sp-3);
   font-size: 13px;
 }
 .back:hover {
-  color: var(--color-brand-green-500);
+  color: var(--color-brand-new-purple);
 }
 
 .app-footer {
   margin-top: var(--sp-12);
   padding-top: var(--sp-6);
-  border-top: 1px solid var(--color-ink-300);
+  border-top: 1px solid var(--color-grey-grey-light);
   font-size: 12px;
-  color: var(--color-ink-500);
+  color: var(--color-grey-grey-darker);
   text-align: center;
   line-height: 1.7;
 }
