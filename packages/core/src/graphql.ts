@@ -69,7 +69,8 @@ export class MattersClient {
 
   constructor(opts: GraphQLClientOptions = {}) {
     this.endpoint = opts.endpoint ?? DEFAULT_ENDPOINT;
-    this.fetchImpl = opts.fetchImpl ?? fetch;
+    const f = opts.fetchImpl ?? fetch;
+    this.fetchImpl = ((...args: Parameters<typeof fetch>) => f(...args)) as typeof fetch;
   }
 
   async query<T>(query: string, variables: Record<string, unknown>): Promise<T> {

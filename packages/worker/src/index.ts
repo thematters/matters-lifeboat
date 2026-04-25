@@ -1,0 +1,137 @@
+/**
+ * Matters 救生艇 · GraphQL CORS proxy
+ *
+ * Reason: matters.town's GraphQL server whitelists Access-Control-Allow-Origin
+ * to https://matters.town and https://matters.news only. For a third-party
+ * static web app (or AI agent acting on the user's behalf) to call it from
+ * the browser, we rewrite the Origin header server-side. We transmit only
+ * the JSON GraphQL payload — no cookies, no tokens, no tracking. See
+ * /privacy-ish endpoint for a human-readable declaration.
+ */
+
+const UPSTREAM = "https://server.matters.town/graphql";
+const MATTERS_ORIGIN = "https://matters.town";
+
+// Allowed front-end origins that may call this proxy.
+// Both prod and preview CF Pages subdomains are allowed.
+const ORIGIN_ALLOWLIST = [
+  /^https:\/\/lifeboat\.matters\.(town|news)$/,
+  /^https:\/\/([a-z0-9-]+\.)?matters-lifeboat\.pages\.dev$/,
+  /^https:\/\/([a-z0-9-]+\.)?matters-lifeboat-app\.pages\.dev$/,
+  /^http:\/\/localhost(:\d+)?$/,
+  /^http:\/\/127\.0\.0\.1(:\d+)?$/,
+];
+
+function allowOrigin(origin: string | null): string | null {
+  if (!origin) return null;
+  for (const re of ORIGIN_ALLOWLIST) if (re.test(origin)) return origin;
+  return null;
+}
+
+function corsHeaders(origin: string | null): HeadersInit {
+  const allowed = allowOrigin(origin);
+  const h: Record<string, string> = {
+    "access-control-allow-methods": "POST, GET, OPTIONS",
+    "access-control-allow-headers":
+      "content-type, apollo-require-preflight, x-apollo-operation-name",
+    "access-control-max-age": "86400",
+    vary: "Origin",
+  };
+  if (allowed) h["access-control-allow-origin"] = allowed;
+  return h;
+}
+
+export default {
+  async fetch(req: Request): Promise<Response> {
+    const url = new URL(req.url);
+    const origin = req.headers.get("origin");
+
+    // --- OPTIONS preflight
+    if (req.method === "OPTIONS") {
+      return new Response(null, { status: 204, headers: corsHeaders(origin) });
+    }
+
+    // --- status / info endpoint (human readable, machine parseable)
+    if (req.method === "GET" && (url.pathname === "/" || url.pathname === "/status")) {
+      const body = {
+        service: "matters-lifeboat-proxy",
+        version: "0.1.0",
+        upstream: UPSTREAM,
+        purpose:
+          "CORS-rewriting GraphQL proxy for matters.town. Forwards JSON payload only. No cookies, no logging, no storage.",
+        source: "https://github.com/mashbean/matters-lifeboat",
+        allowedOrigins: ORIGIN_ALLOWLIST.map((r) => r.source),
+      };
+      return json(body, 200, corsHeaders(origin));
+    }
+
+    // --- /ai.txt for AI agent discovery
+    if (req.method === "GET" && url.pathname === "/ai.txt") {
+      return new Response(
+        [
+          "# matters-lifeboat-proxy",
+          "",
+          "purpose: CORS-rewriting GraphQL proxy for matters.town",
+          "upstream: https://server.matters.town/graphql",
+          "usage: POST JSON GraphQL body to /",
+          "source: https://github.com/mashbean/matters-lifeboat",
+          "",
+        ].join("\n"),
+        { status: 200, headers: { "content-type": "text/plain", ...corsHeaders(origin) } },
+      );
+    }
+
+    // --- only allowlisted origins may POST
+    if (!allowOrigin(origin)) {
+      return json({ error: "origin not allowed", origin }, 403, corsHeaders(origin));
+    }
+    if (req.method !== "POST") {
+      return json({ error: "method not allowed" }, 405, corsHeaders(origin));
+    }
+
+    // Rebuild outbound request — strip client headers that would confuse upstream.
+    const body = await req.text();
+    const upstreamRes = await fetch(UPSTREAM, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "apollo-require-preflight": "true",
+        "x-apollo-operation-name": extractOpName(body) ?? "Anon",
+        origin: MATTERS_ORIGIN,
+        referer: MATTERS_ORIGIN + "/",
+        "user-agent": "matters-lifeboat-proxy/0.1",
+      },
+      body,
+    });
+
+    const upstreamBody = await upstreamRes.text();
+    return new Response(upstreamBody, {
+      status: upstreamRes.status,
+      headers: {
+        "content-type": upstreamRes.headers.get("content-type") ?? "application/json",
+        ...corsHeaders(origin),
+      },
+    });
+  },
+};
+
+function json(obj: unknown, status = 200, headers: HeadersInit = {}): Response {
+  return new Response(JSON.stringify(obj, null, 2), {
+    status,
+    headers: { "content-type": "application/json", ...headers },
+  });
+}
+
+function extractOpName(rawBody: string): string | null {
+  try {
+    const p = JSON.parse(rawBody) as { operationName?: string; query?: string };
+    if (p.operationName) return p.operationName;
+    if (p.query) {
+      const m = p.query.match(/\b(?:query|mutation)\s+(\w+)/);
+      if (m) return m[1] ?? null;
+    }
+  } catch {
+    /* ignore */
+  }
+  return null;
+}

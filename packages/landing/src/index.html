@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Matters 救生艇 · 你的文字，你自己收著</title>
+  <meta name="description" content="一鍵把你的 matters.town 文章備份成 ZIP、pin 到自己的 IPFS、或重建成一個獨立站台。備份是好習慣，數位自主權的第一步。" />
+  <meta property="og:title" content="Matters 救生艇 · Lifeboat" />
+  <meta property="og:description" content="你的文字，你自己收著。一鍵備份你的 matters.town 文章。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://lifeboat.matters.town" />
+  <link rel="canonical" href="https://lifeboat.matters.town" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🛟%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/">
+        <span class="brand-mark" aria-hidden="true">🛟</span>
+        <span class="brand-name">Matters <strong>救生艇</strong></span>
+      </a>
+      <nav class="nav">
+        <a href="#flows">三種備份</a>
+        <a href="#why">為什麼</a>
+        <a href="https://github.com/mashbean/matters-lifeboat" rel="noopener">Source ↗</a>
+        <a class="cta" href="/app/">開始備份 →</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <div class="kicker">Matters × Fediverse · Digital Sovereignty</div>
+        <h1>
+          你的文字，<br />
+          <strong>你自己收著</strong>。
+        </h1>
+        <p class="lede">
+          Matters 救生艇是一個給 matters.town 寫作者的官方備份工具。<br />
+          一鍵把所有公開文章打包成 ZIP、pin 到你自己的 IPFS、甚至重建成一個獨立站台。
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="/app/">🛟 立刻備份我的文章</a>
+          <a class="btn btn-ghost" href="#flows">看三種備份方式</a>
+        </div>
+        <p class="microcopy">
+          完全在你的瀏覽器跑 · 不上傳任何資料 · 開源 MIT · 沒有 server-side 帳號
+        </p>
+      </div>
+    </section>
+
+    <section id="why" class="why">
+      <div class="wrap">
+        <h2>備份是好習慣 🌿</h2>
+        <div class="why-grid">
+          <div>
+            <div class="why-icon" aria-hidden="true">🪶</div>
+            <h3>你寫的字，永遠是你的</h3>
+            <p>
+              在 Matters，文章本就上了 IPFS——但 CID 不等於永存。
+              救生艇讓你保留一份本地副本，並在你信任的儲存上多 pin 一份。
+            </p>
+          </div>
+          <div>
+            <div class="why-icon" aria-hidden="true">🌐</div>
+            <h3>跨站可遷移</h3>
+            <p>
+              ZIP 內含 Markdown + frontmatter + 圖片，任何靜態站產生器
+              （Astro / Hugo / Eleventy）都吃。AI agent 也讀得懂。
+            </p>
+          </div>
+          <div>
+            <div class="why-icon" aria-hidden="true">🛟</div>
+            <h3>明天的 plan B</h3>
+            <p>
+              不是因為今天有事，而是因為任何寫作者都該有一份隨身的備份。
+              先做起來，比之後才補做容易得多。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="flows" class="flows">
+      <div class="wrap">
+        <h2>三種備份，從輕到重</h2>
+        <p class="section-lede">挑一種你今天有時間做的——晚點還可以接著做下一階段。</p>
+
+        <div class="flow-grid">
+          <a class="flow-card" href="/app/?flow=a">
+            <div class="flow-tag">A · 5 分鐘</div>
+            <h3>備份成 ZIP</h3>
+            <p>
+              輸入 username，瀏覽器抓下所有公開文章 + 圖片，打包成一個 ZIP 檔。
+              零帳號、零上傳。
+            </p>
+            <div class="flow-artifact">
+              <code>username-matters-lifeboat.zip</code><br />
+              <span class="flow-meta">含 posts/ · assets/ · MANIFEST.json · README.md · AGENT.md</span>
+            </div>
+            <div class="flow-go">開始備份 →</div>
+          </a>
+
+          <a class="flow-card" href="/app/?flow=b">
+            <div class="flow-tag">B · 10 分鐘</div>
+            <h3>Pin 到你的 IPFS</h3>
+            <p>
+              把官方記錄的 IPFS hash 一次 pin 到你自己的 Pinata 帳號。
+              token 只在你的瀏覽器，關 tab 就清空。
+            </p>
+            <div class="flow-artifact">
+              需要：Pinata 免費帳號（1GB 永久免費，工具內附申請步驟）
+            </div>
+            <div class="flow-go">設定 + dry-run →</div>
+          </a>
+
+          <a class="flow-card" href="/app/?flow=c">
+            <div class="flow-tag">C · 30 分鐘</div>
+            <h3>蓋一個自己的站</h3>
+            <p>
+              用 ZIP 重新打包成 Astro 站台模板，丟到 Cloudflare Pages 就有
+              <code>yourname.pages.dev</code>。可以接自己的網域。
+            </p>
+            <div class="flow-artifact">
+              <code>username-site.zip</code> → drag & drop 到 CF Pages
+            </div>
+            <div class="flow-go">下載站台模板 →</div>
+          </a>
+        </div>
+
+        <p class="ai-note">
+          🤖 用 Claude / ChatGPT / Cursor 自動跑也可以——
+          <a href="https://github.com/mashbean/matters-lifeboat/blob/main/AGENT.md" rel="noopener">
+            看 AI agent 操作手冊
+          </a>
+        </p>
+      </div>
+    </section>
+
+    <section class="trust">
+      <div class="wrap">
+        <h2>透明 · 可驗證 · 你說了算</h2>
+        <ul class="trust-list">
+          <li><strong>完全開源</strong>：<a href="https://github.com/mashbean/matters-lifeboat" rel="noopener">mashbean/matters-lifeboat</a>（待轉移到 thematters/）</li>
+          <li><strong>完全 in-browser</strong>：所有抓取、打包、加密在你的 tab 裡完成</li>
+          <li><strong>零儲存</strong>：我們沒有 server，也沒有資料庫</li>
+          <li><strong>token 零留存</strong>：Pinata / GitHub token 只在 sessionStorage，關 tab 就清空</li>
+          <li><strong>AI-friendly</strong>：每個 flow 都有 <code>AGENT.md</code>，agent 能讀能跑</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="cta-final">
+      <div class="wrap">
+        <h2>所以——備份你的文章，<strong>就現在</strong>。</h2>
+        <a class="btn btn-primary btn-lg" href="/app/">🛟 開始備份</a>
+        <p class="microcopy">不需要註冊。輸入 username 就開始。</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>
+        <strong>Matters 救生艇</strong> · MIT License ·
+        <a href="https://github.com/mashbean/matters-lifeboat" rel="noopener">Source</a> ·
+        <a href="https://matters.town" rel="noopener">matters.town</a> ·
+        Made by the Matters community
+      </p>
+      <p class="legal">
+        本工具以你的瀏覽器作為運算環境，不收集個資、不儲存 token。
+        圖片版權歸原作者所有，備份僅供個人 archival 用途。
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

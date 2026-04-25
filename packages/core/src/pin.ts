@@ -29,7 +29,8 @@ export class PinataClient {
 
   constructor(opts: PinataClientOptions) {
     this.jwt = opts.jwt;
-    this.fetchImpl = opts.fetchImpl ?? fetch;
+    const f = opts.fetchImpl ?? fetch;
+    this.fetchImpl = ((...args: Parameters<typeof fetch>) => f(...args)) as typeof fetch;
     this.baseUrl = opts.baseUrl ?? "https://api.pinata.cloud";
   }
 

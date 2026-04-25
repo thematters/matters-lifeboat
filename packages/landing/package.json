@@ -1,0 +1,11 @@
+{
+  "name": "@matters/lifeboat-landing",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Static landing page for Matters Lifeboat",
+  "scripts": {
+    "dev": "npx -y serve dist -l 4318",
+    "build": "node build.mjs",
+    "preview": "npx -y serve dist -l 4318"
+  }
+}

@@ -1,0 +1,6 @@
+name = "matters-lifeboat-proxy"
+main = "src/index.ts"
+compatibility_date = "2026-03-01"
+
+# Expected production URL:
+# https://matters-lifeboat-proxy.<account>.workers.dev

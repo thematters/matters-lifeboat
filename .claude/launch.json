@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "app",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["-w", "@matters/lifeboat-app", "run", "dev"],
+      "port": 5173,
+      "cwd": "/tmp/matters-lifeboat"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "@matters/lifeboat-worker",
+  "version": "0.1.0",
+  "description": "Cloudflare Worker — GraphQL CORS proxy for matters.town",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240117.0",
+    "typescript": "^5.3.3",
+    "wrangler": "^3.25.0"
+  }
+}
