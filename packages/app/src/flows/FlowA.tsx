@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { exportUser, type ExportProgress, type ZipResult } from "@matters/lifeboat-core";
 import { getEndpoint } from "../api";
 import { LicenseNotice } from "../components/LicenseNotice";
+import { Button } from "../components/Button";
+import { TextField } from "../components/TextField";
 import type { SharedSession } from "../App";
 
 interface Props {
@@ -99,28 +101,30 @@ export function FlowA({ session, setSession, onGotoB, onGotoC, onBack }: Props) 
         <p>輸入你或任何 matters.town 用戶的公開 username，會抓下所有公開文章、圖片，打包成 ZIP。</p>
 
         <div style={{ marginBottom: 12 }}>
-          <input
-            className="input"
+          <TextField
             placeholder="@mashbean"
             value={username}
             disabled={running}
             onChange={(e) => setUsername(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && !running && void run()}
+            helperText={
+              <>
+                支援 <code>@mashbean</code>、<code>mashbean</code>、或整條 matters.town 網址
+              </>
+            }
           />
-          <div className="helper" style={{ marginTop: 6, fontSize: 12 }}>
-            支援 <code>@mashbean</code>、<code>mashbean</code>、或整條 matters.town 網址
-          </div>
         </div>
 
         <LicenseNotice />
 
-        <button
-          className="btn btn-primary"
+        <Button
+          variant="primary"
           onClick={() => void run()}
           disabled={running || !username.trim()}
+          loading={running}
         >
           {running ? "備份中⋯" : result ? "再備份一次" : "開始備份 →"}
-        </button>
+        </Button>
 
         {error && <div className="callout error">{error}</div>}
       </div>
@@ -172,15 +176,15 @@ export function FlowA({ session, setSession, onGotoB, onGotoC, onBack }: Props) 
           </div>
 
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 20 }}>
-            <button className="btn btn-primary" onClick={downloadZip}>
+            <Button variant="primary" onClick={downloadZip}>
               ⬇️ 下載 ZIP
-            </button>
-            <button className="btn btn-secondary" onClick={onGotoB}>
+            </Button>
+            <Button variant="secondary" onClick={onGotoB}>
               接著：pin 到我的 IPFS →
-            </button>
-            <button className="btn btn-secondary" onClick={onGotoC}>
+            </Button>
+            <Button variant="secondary" onClick={onGotoC}>
               接著：產出可部署站台 →
-            </button>
+            </Button>
           </div>
 
           <div className="callout success" style={{ marginTop: 20 }}>
