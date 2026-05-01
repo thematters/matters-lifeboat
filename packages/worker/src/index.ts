@@ -10,6 +10,7 @@
  */
 
 const UPSTREAM = "https://server.matters.town/graphql";
+const LANDING_UPSTREAM = "https://matters-lifeboat.pages.dev";
 const MATTERS_ORIGIN = "https://matters.town";
 
 // Allowed front-end origins that may call this proxy.
@@ -52,13 +53,14 @@ export default {
     }
 
     // --- status / info endpoint (human readable, machine parseable)
-    if (req.method === "GET" && (url.pathname === "/" || url.pathname === "/status")) {
+    if (req.method === "GET" && url.pathname === "/status") {
       const body = {
         service: "matters-lifeboat-proxy",
         version: "0.1.0",
         upstream: UPSTREAM,
+        landing: LANDING_UPSTREAM,
         purpose:
-          "CORS-rewriting GraphQL proxy for matters.town. Forwards JSON payload only. No cookies, no logging, no storage.",
+          "Landing-page reverse proxy and CORS-rewriting GraphQL proxy for matters.town. Forwards JSON payload only. No cookies, no logging, no storage.",
         source: "https://github.com/mashbean/matters-lifeboat",
         allowedOrigins: ORIGIN_ALLOWLIST.map((r) => r.source),
       };
@@ -71,14 +73,20 @@ export default {
         [
           "# matters-lifeboat-proxy",
           "",
-          "purpose: CORS-rewriting GraphQL proxy for matters.town",
+          "purpose: Landing-page reverse proxy and CORS-rewriting GraphQL proxy for matters.town",
+          "landing: https://matters-lifeboat.pages.dev",
           "upstream: https://server.matters.town/graphql",
-          "usage: POST JSON GraphQL body to /",
+          "usage: GET pages from /, POST JSON GraphQL body to /",
           "source: https://github.com/mashbean/matters-lifeboat",
           "",
         ].join("\n"),
         { status: 200, headers: { "content-type": "text/plain", ...corsHeaders(origin) } },
       );
+    }
+
+    // --- public landing page
+    if (req.method === "GET" || req.method === "HEAD") {
+      return proxyLanding(req, url);
     }
 
     // --- only allowlisted origins may POST
@@ -114,6 +122,24 @@ export default {
     });
   },
 };
+
+async function proxyLanding(req: Request, url: URL): Promise<Response> {
+  const upstreamUrl = new URL(url.pathname + url.search, LANDING_UPSTREAM);
+  const upstreamReq = new Request(upstreamUrl, {
+    method: req.method,
+    headers: req.headers,
+    redirect: "manual",
+  });
+  const upstreamRes = await fetch(upstreamReq);
+  const headers = new Headers(upstreamRes.headers);
+  headers.delete("content-security-policy");
+  headers.set("x-matters-lifeboat-proxy", "landing");
+  return new Response(upstreamRes.body, {
+    status: upstreamRes.status,
+    statusText: upstreamRes.statusText,
+    headers,
+  });
+}
 
 function json(obj: unknown, status = 200, headers: HeadersInit = {}): Response {
   return new Response(JSON.stringify(obj, null, 2), {
