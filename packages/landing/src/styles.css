@@ -210,6 +210,9 @@ code {
   box-shadow: var(--shadow-md);
 }
 .flow-tag {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
   align-self: flex-start;
   font-size: 12px; font-weight: 700; letter-spacing: 0.05em;
   color: var(--c-primary-700);
