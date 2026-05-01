@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { PinataClient, type PinResult } from "@matters/lifeboat-core";
+import {
+  buildFingerprintPage,
+  PinataClient,
+  type PinataUploadResult,
+} from "@matters/lifeboat-core";
 import type { SharedSession } from "../App";
 import { BackupGate } from "../components/BackupGate";
 import { Button } from "../components/Button";
@@ -11,16 +15,16 @@ interface Props {
   onBack: () => void;
 }
 
-type Stage = "intro" | "token" | "dry-run" | "pinning" | "done";
+type Stage = "intro" | "token" | "preview" | "uploading" | "done";
+type Uploads = { proof: PinataUploadResult; backup: PinataUploadResult };
 
 export function FlowB({ session, setSession, onBack }: Props) {
   const [stage, setStage] = useState<Stage>("intro");
   const [token, setToken] = useState("");
   const [tokenStatus, setTokenStatus] = useState<"idle" | "checking" | "ok" | "bad">("idle");
   const [tokenError, setTokenError] = useState<string | null>(null);
-  const [results, setResults] = useState<PinResult[]>([]);
-  const [current, setCurrent] = useState<string>("");
-  const [progress, setProgress] = useState({ done: 0, total: 0 });
+  const [upload, setUpload] = useState<Uploads | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   useEffect(() => {
     const saved = sessionStorage.getItem("matters-lifeboat:pinata-jwt");
@@ -37,18 +41,20 @@ export function FlowB({ session, setSession, onBack }: Props) {
           ← 回到選擇
         </button>
         <BackupGate
-          title="⚓ 永存：先備份再 pin"
-          reason="把備份裡的每個 IPFS CID pin 一份到你自己的 Pinata 帳號。第一步是抓下備份——輸入 username 開始，跑完自動進入下一階段。"
+          title="⚓ 多放一份：先備份再上傳"
+          reason="先做完整備份，再產生一張可分享的文章地址頁，一起上傳到你的 Pinata。第一步是輸入 Matters 帳號。"
           onComplete={(zip) => setSession({ ...session, zip, user: { userName: zip.manifest.source.userName } as any })}
-          ctaLabel="繼續設定 Pinata token →"
+          ctaLabel="繼續設定 Pinata 臨時門票 →"
         />
       </>
     );
   }
 
   const zip = session.zip;
+  const userName = zip.manifest.source.userName;
   const cids = [...new Set(zip.manifest.articles.map((a) => a.dataHash).filter(Boolean))];
-  const cidNames = new Map(zip.manifest.articles.map((a) => [a.dataHash, a.title]));
+  const fileName = `${userName}-lifeboat-backup.zip`;
+  const proofPage = buildFingerprintPage(zip.manifest);
 
   async function verifyToken() {
     setTokenStatus("checking");
@@ -59,10 +65,10 @@ export function FlowB({ session, setSession, onBack }: Props) {
       const ok = await c.verifyAuth();
       if (ok) {
         setTokenStatus("ok");
-        setStage("dry-run");
+        setStage("preview");
       } else {
         setTokenStatus("bad");
-        setTokenError("Pinata 說這個 token 不對。請確認你是從 Pinata → API Keys 複製的 JWT。");
+        setTokenError("Pinata 說這張門票不對。請確認你是從 Pinata 的 API Keys 頁面複製完整那串字。");
       }
     } catch (e) {
       setTokenStatus("bad");
@@ -70,21 +76,19 @@ export function FlowB({ session, setSession, onBack }: Props) {
     }
   }
 
-  async function runPin(onlyFirst: boolean) {
-    setStage("pinning");
-    const targetCids = onlyFirst ? cids.slice(0, 1) : cids;
-    setProgress({ done: 0, total: targetCids.length });
-    const client = new PinataClient({ jwt: token });
-    const out = await client.pinMany(targetCids, {
-      names: cidNames,
-      onProgress: (p) => {
-        setProgress({ done: p.done, total: p.total });
-        setCurrent(p.current);
-        setResults((r) => [...r, p.result]);
-      },
-    });
-    setResults(out);
-    setStage("done");
+  async function runUpload() {
+    setStage("uploading");
+    setUploadError(null);
+    try {
+      const client = new PinataClient({ jwt: token });
+      const proof = await client.uploadPublicFile(proofPage.blob, proofPage.fileName);
+      const backup = await client.uploadPublicFile(zip.blob, fileName);
+      setUpload({ proof, backup });
+      setStage("done");
+    } catch (e) {
+      setUploadError((e as Error).message);
+      setStage("preview");
+    }
   }
 
   return (
@@ -95,26 +99,27 @@ export function FlowB({ session, setSession, onBack }: Props) {
 
       {stage === "intro" && (
         <div className="card">
-          <h2>⚓ 永存流程 · 把文章 pin 到你自己的 IPFS</h2>
+          <h2>⚓ 多放一份到自己的保存空間</h2>
           <p>
-            你的備份裡有 <strong>{cids.length}</strong> 個不同的 IPFS CID。
-            接下來我們會用你的 Pinata 帳號，把這些 CID 都 pin 一份到你的名下。
+            你的備份裡有 <strong>{zip.manifest.stats.totalArticles}</strong> 篇文章、
+            <strong>{zip.manifest.stats.totalImages}</strong> 張圖片，以及
+            <strong>{cids.length}</strong> 個文章地址。
           </p>
           <p>
-            從此，即使 matters.town 某天不再 pin 你的某篇文章，
-            只要你的 Pinata 帳號還在，這份內容就從 IPFS 網路上取得回。
+            這一步會上傳兩個東西：一張可以打開和分享的「文章地址頁」，
+            以及一份完整備份。地址頁給人看，完整備份留給你自己保存。
           </p>
           <div className="trust">
-            <strong>流程會分三步：</strong>
+            <strong>流程會分三步，很像把檔案放進雲端硬碟：</strong>
             <br />
-            ① 貼上你的 Pinata JWT → 我們幫你確認能用
+            ① 從 Pinata 複製一張臨時門票
             <br />
-            ② 預覽要 pin 哪些 CID（dry-run，還不會寫入）
+            ② Lifeboat 測試這張門票能不能用
             <br />
-            ③ 你按「開始 pin」才真正執行
+            ③ 你按「上傳」後，Pinata 回傳可分享連結
           </div>
           <Button variant="primary" onClick={() => setStage("token")}>
-            我有 Pinata 帳號，開始 →
+            我有 Pinata 帳號，照步驟開始 →
           </Button>
           <span style={{ marginLeft: 12, display: "inline-block" }}>
             <Button
@@ -123,7 +128,7 @@ export function FlowB({ session, setSession, onBack }: Props) {
                 window.open("https://app.pinata.cloud/developers/api-keys", "_blank")
               }
             >
-              我還沒有，去 Pinata 申請（3 分鐘）↗
+              打開 Pinata API Keys ↗
             </Button>
           </span>
         </div>
@@ -131,14 +136,20 @@ export function FlowB({ session, setSession, onBack }: Props) {
 
       {stage === "token" && (
         <div className="card">
-          <h2>貼上你的 Pinata JWT</h2>
+          <h2>貼上 Pinata 的臨時門票</h2>
           <p>
-            到 Pinata → Developers → API Keys，建立一組至少含有
-            <code>pinByHash</code> 權限的 key，複製它回傳的 JWT（長字串，以 <code>eyJ</code> 開頭）。
+            Pinata 會給你一串很長的字，正式名稱叫 JWT。你可以先把它想成「只給這次上傳用的臨時門票」。照這樣點：
           </p>
+          <ol className="simple-steps">
+            <li>打開 Pinata，左邊選 <strong>API Keys</strong>。</li>
+            <li>按 <strong>New Key</strong>。</li>
+            <li>名稱填 <code>matters-lifeboat</code>。</li>
+            <li>權限選 <strong>Files: Read + Write</strong>，其他不用開。</li>
+            <li>建立後複製那串很長、開頭像 <code>eyJ</code> 的字。</li>
+          </ol>
           <div className="trust">
-            <strong>關於這個 token：</strong>
-            我們只在你這個分頁的 sessionStorage 保存，關 tab 就立即清除、永遠不送到我們任何伺服器。你可以打開開發者工具親眼看它躺在哪裡。
+            <strong>安全提醒：</strong>
+            這串字只放在這個瀏覽器分頁裡，關掉分頁就清掉；它不會送到 Lifeboat 伺服器。
           </div>
           <TextField
             multiline
@@ -156,7 +167,7 @@ export function FlowB({ session, setSession, onBack }: Props) {
               loading={tokenStatus === "checking"}
               onClick={() => void verifyToken()}
             >
-              {tokenStatus === "checking" ? "跟 Pinata 打招呼⋯" : "測試這個 token →"}
+              {tokenStatus === "checking" ? "跟 Pinata 打招呼⋯" : "測試這張門票 →"}
             </Button>
             <Button variant="secondary" onClick={() => setStage("intro")}>
               上一步
@@ -165,44 +176,22 @@ export function FlowB({ session, setSession, onBack }: Props) {
         </div>
       )}
 
-      {stage === "dry-run" && (
+      {stage === "preview" && (
         <div className="card">
-          <h2>預覽：將會 pin 這 {cids.length} 個 CID</h2>
+          <h2>預覽：即將上傳 2 個檔案</h2>
           <p>
-            以下是會被送到你 Pinata 帳號的 IPFS CID 清單。
-            <strong>此時還沒有任何動作寫入你的帳號</strong>，你可以放心預覽。
+            會先上傳一張可分享的文章地址頁；
+            接著上傳完整備份檔。大小約
+            <strong> {(zip.bytes.length / 1024 / 1024).toFixed(2)} MB</strong>。
           </p>
-          <div
-            style={{
-              maxHeight: 260,
-              overflow: "auto",
-              fontSize: 13,
-              border: "1px solid var(--color-grey-grey-light)",
-              borderRadius: "var(--radius-md)",
-              padding: 12,
-            }}
-          >
-            {cids.slice(0, 50).map((cid) => (
-              <div
-                key={cid}
-                style={{ padding: "4px 0", borderBottom: "1px solid var(--color-grey-grey-hover)" }}
-              >
-                <div style={{ fontWeight: 500 }}>{cidNames.get(cid) ?? "(untitled)"}</div>
-                <code style={{ fontSize: 11, color: "var(--color-grey-grey-darker)" }}>{cid}</code>
-              </div>
-            ))}
-            {cids.length > 50 && (
-              <div style={{ padding: 8, color: "var(--color-grey-grey-darker)" }}>
-                ⋯還有 {cids.length - 50} 個，省略不顯示
-              </div>
-            )}
+          <div className="trust">
+            <strong>為什麼不是只上傳壓縮檔？</strong>
+            壓縮檔適合保存，但別人打開前不知道裡面是什麼。文章地址頁可以直接分享，清楚列出每篇文章的 Matters 連結和 IPFS 連結。
           </div>
+          {uploadError && <div className="callout error">{uploadError}</div>}
           <div style={{ marginTop: 16, display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <Button variant="primary" onClick={() => void runPin(false)}>
-              確認，開始 pin 全部 {cids.length} 個
-            </Button>
-            <Button variant="secondary" onClick={() => void runPin(true)}>
-              只 pin 第一個試試（baby step）
+            <Button variant="primary" onClick={() => void runUpload()}>
+              確認，上傳地址頁與完整備份
             </Button>
             <Button variant="tertiary" onClick={() => setStage("token")}>
               回上一步
@@ -211,72 +200,44 @@ export function FlowB({ session, setSession, onBack }: Props) {
         </div>
       )}
 
-      {stage === "pinning" && (
+      {stage === "uploading" && (
         <div className="card">
-          <h2>🚀 正在 pin 到你的 Pinata⋯</h2>
+          <h2>🚀 正在上傳到 Pinata⋯</h2>
           <div className="progress-outer">
-            <div
-              className="progress-inner"
-              style={{
-                width: `${progress.total ? (progress.done / progress.total) * 100 : 0}%`,
-              }}
-            />
-          </div>
-          <div style={{ fontSize: 14 }}>
-            {progress.done} / {progress.total} 個 CID · 當前：<code>{current}</code>
+            <div className="progress-inner" style={{ width: "70%" }} />
           </div>
           <div className="callout info">
-            🍵 可以先去泡杯茶。關 tab 也沒關係，之前 pin 成功的不會掉。
-            但若你關掉，剩下的要重新從這一步接著做。
+            正在把文章地址頁與完整備份上傳到 Pinata。請先不要關閉分頁。
           </div>
         </div>
       )}
 
-      {stage === "done" && (
+      {stage === "done" && upload && (
         <div className="card">
-          <h2>⚓ 完成</h2>
-          {(() => {
-            const success = results.filter((r) => r.status === "success").length;
-            const already = results.filter((r) => r.status === "already-pinned").length;
-            const failed = results.filter((r) => r.status === "failed").length;
-            return (
-              <div className="stats">
-                <div className="stat">
-                  <div className="v">{success}</div>
-                  <div className="k">新 pin 成功</div>
-                </div>
-                <div className="stat">
-                  <div className="v">{already}</div>
-                  <div className="k">早已在你那</div>
-                </div>
-                <div className="stat">
-                  <div className="v">{failed}</div>
-                  <div className="k">失敗</div>
-                </div>
-              </div>
-            );
-          })()}
-          <div className="callout success" style={{ marginTop: 16 }}>
-            <strong>你現在是保管人了。</strong> 去
-            <a href="https://app.pinata.cloud/pinmanager" target="_blank" rel="noreferrer">
-              &nbsp;Pinata Pin Manager
-            </a>
-            確認一下，會看到剛剛 pin 的項目。
+          <h2>⚓ 完成：多一份保障</h2>
+          <div className="stats">
+            <div className="stat">
+              <div className="v">2</div>
+              <div className="k">檔案已上傳</div>
+            </div>
+            <div className="stat">
+              <div className="v">{cids.length}</div>
+              <div className="k">文章地址已保留</div>
+            </div>
           </div>
-          {results.some((r) => r.status === "failed") && (
-            <details style={{ marginTop: 12 }}>
-              <summary>看失敗清單（{results.filter((r) => r.status === "failed").length} 個）</summary>
-              <div className="log" style={{ marginTop: 8 }}>
-                {results
-                  .filter((r) => r.status === "failed")
-                  .map((r, i) => (
-                    <div className="line err" key={i}>
-                      {r.cid} — {r.error}
-                    </div>
-                  ))}
-              </div>
-            </details>
-          )}
+          <div className="callout success" style={{ marginTop: 16 }}>
+            <strong>恭喜，你已經把自己的心血結晶，多備一份到分散式儲存系統。</strong>
+            <br />
+            多一分保存，就多一分保障。下面兩個連結，一個方便分享，一個是完整備份。
+            <br />
+            地址頁代號：<code>{upload.proof.cid}</code>
+            <br />
+            分享連結：<a href={upload.proof.gatewayUrl} target="_blank" rel="noreferrer">{upload.proof.gatewayUrl}</a>
+            <br />
+            完整備份代號：<code>{upload.backup.cid}</code>
+            <br />
+            完整備份連結：<a href={upload.backup.gatewayUrl} target="_blank" rel="noreferrer">{upload.backup.gatewayUrl}</a>
+          </div>
         </div>
       )}
     </>

@@ -14,7 +14,7 @@ interface Props {
   onComplete: (zip: ZipResult) => void;
   /** Initial username (e.g. from URL param). */
   initialUsername?: string;
-  /** Footer label after success — e.g. "繼續永存 →" / "繼續立站 →" */
+  /** Footer label after success, for example "繼續上傳到 Pinata →". */
   ctaLabel?: string;
 }
 
@@ -44,10 +44,12 @@ export function BackupGate({ title, reason, onComplete, initialUsername = "", ct
     setError(null);
     setRunning(true);
     setLogs([]);
-    addLog(`連線到 ${new URL(getEndpoint(), location.href).host}`);
+    const endpoint = getEndpoint();
+    addLog(`連線到 ${new URL(endpoint, location.href).host}`);
     try {
       const r = await exportUser({
         userName: clean,
+        endpoint,
         includeImages: true,
         onProgress: (p) => {
           setProgress(p);

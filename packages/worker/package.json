@@ -1,6 +1,6 @@
 {
   "name": "@matters/lifeboat-worker",
-  "version": "0.1.0",
+  "version": "0.1.5",
   "description": "Cloudflare Worker — GraphQL CORS proxy for matters.town",
   "private": true,
   "type": "module",

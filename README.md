@@ -1,50 +1,68 @@
 # Matters 救生艇 · matters-lifeboat
 
-**一鍵把你的 matters.town 文章備份、永存、甚至立一個自己的站。**
+**給 matters.town 寫作者的開源備份工具。**
 
-> 這不是因為 matters 會消失。是因為，**你寫的字，本來就該由你保管。**
+> 你的文字，你自己收著。備份不是因為今天會出事，而是因為創作者本來就該握有自己的副本。
+
+網站版：<https://lifeboat.matters.town>
 
 ---
 
 ## 這個工具做什麼
 
-三條路，由你選，一次比一次深一點：
+首頁維持三個主流程，從簡單到完整：
 
-### 🛟 備份（Backup）— 30 秒
-輸入你的 matters.town 用戶名 → 下載一個 zip。
-裡面是所有文章的 Markdown、原圖、metadata、每一篇的 IPFS CID。
-不用註冊、不用登入、不給我們任何資料。
+### 🛟 A. 下載完整備份
 
-### 🌊 永存（Preserve）— 3 分鐘
-在備份之後，貼一個免費的 Storacha 或 Pinata 帳號 API token。
-每一篇文章的 IPFS CID 會被 re-pin 到你的帳號底下。
-從此，即使 matters.town 不再 pin 你的文章，內容仍可從 IPFS 取回。
+輸入 Matters 帳號，下載一個 ZIP。
+裡面有公開文章、圖片、授權資訊、原始 Matters 連結和 IPFS 文章地址。
 
-### 🏝️ 立站（Liberate）— 5 分鐘
-在備份之後，授權 GitHub → 自動建立一個你自己的 repo → Cloudflare Pages 自動部署。
-產出跟 matters 官方 IPNS 站相同結構的個人網站。網址、樣式、字體、主權，都在你手上。
+不用註冊、不用登入；文章和門票不會被保存到 Lifeboat 伺服器。
+
+### ⚓ B. 放到自己的保存空間
+
+如果你想多留一份在線上，可以把兩個檔案上傳到自己的 Pinata：
+
+- 一張可以打開、可以分享的文章地址頁
+- 一份完整備份 ZIP
+
+Pinata 會給你一串很長的臨時門票，正式名稱叫 JWT。Lifeboat 只在這個瀏覽器分頁裡使用它，關掉分頁就清掉。
+
+### 🏝️ C. 蓋一個自己的站
+
+把文章做成一包純靜態網站檔案。
+到 Cloudflare 選 **Upload your static files**，把解壓後的資料夾拖上去，最後按 **Deploy**。
+
+不需要 GitHub、不需要寫程式、不需要 build command。
+
+### 補充：文章地址簿
+
+如果你還不想下載完整備份，可以先保存一份很小的文章地址簿。
+它只整理既有 Matters 文章連結和 IPFS 連結，不包含全文和圖片。
+
+這適合先把「我的文章在哪裡」收在自己手上，之後再補做完整備份、Pinata 保存或架站。
 
 ---
 
 ## 為什麼要做
 
-Matters 自己的產品經理團隊（包括我 @mashbean，Matters 總經理）相信：
+Matters 長期重視開放網路與創作者的資料主權。
+Matters 文章本來就有 IPFS 地址；救生艇把這些地址、完整備份、Pinata 保存和 Cloudflare 架站整理成一般人也能按完的流程。
 
-**創作者的資料主權不是口號，是基礎設施該做的事。**
-
-Matters 站本身早就把你的文章打包成 IPFS bundle 推到 Storacha 和 Pinata。
-這個工具把「這件事你自己也能做、隨時都能做」變成**按一個鈕**。
-
-備份是一種好習慣 —— 跟刷牙、鎖門、定期存硬碟一樣。
-不是因為會出事，是因為這是對自己創作的尊重。
+備份是一種好習慣。
+就像照片會存在手機和雲端，文章也可以多留一份在自己手上。
 
 ---
 
 ## 現在就開始
 
-- **網站版（零安裝）**：<https://lifeboat.matters.town>（部署中）
-- **AI Agent 代理**：把本 README 貼給 Claude / ChatGPT，告訴它「請幫我備份 matters 用戶名 XXX」，它就能用本 repo 的工具完成。詳見 [`docs/agent-usage.md`](docs/agent-usage.md)
-- **CLI（給有程式基礎的人）**：`npx @matters/lifeboat export --user YOUR_USERNAME`
+- **網站版**：<https://lifeboat.matters.town>
+- **AI agent 操作手冊**：[`AGENT.md`](AGENT.md)
+- **測試報告**：[`docs/flow-test-report-2026-05-01.md`](docs/flow-test-report-2026-05-01.md)
+
+如果要交給 AI agent，可以直接說：
+
+> 請用 Matters 救生艇幫我備份 matters 用戶名 XXX。先下載完整備份；如果我要線上保存，再引導我用 Pinata；如果我要架站，再產出 Cloudflare 可上傳的網站包。
 
 ---
 
@@ -53,19 +71,22 @@ Matters 站本身早就把你的文章打包成 IPFS bundle 推到 Storacha 和 
 ```
 你的 matters.town 用戶名
     ↓
-    ↓ (公開 GraphQL API，匿名可查)
+公開 GraphQL API
     ↓
 server.matters.town/graphql
     ↓
-    ↓ 抓所有文章：markdown、html、tags、IPFS CID、圖片 URL
+抓取公開文章、圖片 URL、授權資訊、IPFS 文章地址
     ↓
-瀏覽器裡打包 zip（不經過任何伺服器）
+在瀏覽器裡打包
     ↓
-    ↓
-    ├─→ 下載到你電腦（A 路徑結束）
-    ├─→ pin 到你的 Storacha / Pinata（B 路徑）
-    └─→ push 到你的 GitHub + Cloudflare Pages（C 路徑）
+    ├─→ 下載完整 ZIP 到你電腦（A）
+    ├─→ 上傳文章地址頁 + backup.zip 到你的 Pinata（B）
+    ├─→ 產生靜態網站包，拖到 Cloudflare 後按 Deploy（C）
+    └─→ 可選：只下載文章地址簿
 ```
+
+Lifeboat 有一個 Cloudflare Worker proxy，用來解決瀏覽器 CORS 限制。
+它只轉送 GraphQL JSON 請求，不保存文章、不保存 Pinata 門票，也沒有資料庫。
 
 ---
 
@@ -73,21 +94,44 @@ server.matters.town/graphql
 
 ```
 packages/
-├── core/      TypeScript 共用邏輯（GraphQL、zip、pin、frontmatter）
-├── worker/    Cloudflare Worker — GraphQL CORS proxy
-├── app/       React + Vite — 使用者操作介面
-└── landing/   Astro — 產品首頁（使用 thematters/design-system tokens）
+├── core/      TypeScript 共用邏輯：GraphQL、ZIP、文章地址簿、Pinata、靜態網站
+├── worker/    Cloudflare Worker：GraphQL CORS proxy
+├── app/       React + Vite：使用者操作介面
+└── landing/   靜態產品首頁
 
 docs/
-├── ux-flow.md              UX 流程規格
-├── usability-test-plan.md  易用性測試計畫
-└── ux-copywriting.md       微文案清單
+├── flow-test-report-2026-05-01.md  完整人工與 agent 流程測試報告
+├── ux-flow.md                      UX 流程規格
+├── usability-test-plan.md          易用性測試計畫
+└── ux-copywriting.md               微文案清單
+```
+
+---
+
+## 本機開發
+
+需要 Node.js 18+。
+
+```bash
+git clone https://github.com/thematters/matters-lifeboat.git
+cd matters-lifeboat
+npm install
+npm run build
+```
+
+常用指令：
+
+```bash
+npm run dev:app
+npm run dev:landing
+npm run test:flow
 ```
 
 ---
 
 ## 授權
 
-MIT。你可以自己架一份、改一份、商用一份。數位自主是相互的。
+MIT。
+你可以自己架一份、改一份、協助使用者備份自己的文章。
 
-本專案目前在 `mashbean/matters-lifeboat`，未來會轉移到 `thematters/matters-lifeboat`。
+文章內容的再利用仍受原作者授權限制；備份檔內會逐篇記錄授權資訊。

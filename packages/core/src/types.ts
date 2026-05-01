@@ -46,6 +46,20 @@ export interface ExportProgress {
   message: string;
 }
 
+export interface FingerprintOptions {
+  userName: string;
+  endpoint?: string;
+  pageSize?: number;
+  onProgress?: (progress: FingerprintProgress) => void;
+}
+
+export interface FingerprintProgress {
+  phase: "init" | "fetching-articles" | "packaging" | "done";
+  current: number;
+  total: number;
+  message: string;
+}
+
 export interface Manifest {
   schema: "matters-lifeboat/v1";
   exportedAt: string;
@@ -87,4 +101,30 @@ export interface Manifest {
     summary: string;
     perArticleAt: "articles[].license";
   };
+}
+
+export interface FingerprintManifest {
+  schema: "matters-lifeboat-fingerprints/v1";
+  exportedAt: string;
+  source: Manifest["source"];
+  stats: {
+    totalArticles: number;
+    activeArticles: number;
+    totalFingerprints: number;
+  };
+  articles: Array<{
+    slug: string;
+    title: string;
+    shortHash: string;
+    dataHash: string;
+    mediaHash: string;
+    iscnId: string | null;
+    state: string;
+    license: string | null;
+    createdAt: string;
+    tags: string[];
+    sourceUrl: string;
+    ipfsGateways: string[];
+  }>;
+  note: string;
 }

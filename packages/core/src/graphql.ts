@@ -35,6 +35,38 @@ const USER_ARTICLES_QUERY = `
   }
 `;
 
+const USER_ARTICLE_FINGERPRINTS_QUERY = `
+  query UserArticleFingerprints($userName: String!, $input: UserArticlesInput!) {
+    user(input: { userName: $userName }) {
+      userName
+      displayName
+      articles(input: $input) {
+        totalCount
+        pageInfo { hasNextPage endCursor }
+        edges {
+          cursor
+          node {
+            id
+            title
+            slug
+            shortHash
+            dataHash
+            mediaHash
+            iscnId
+            state
+            license
+            createdAt
+            revisedAt
+            summary
+            cover
+            tags { content }
+          }
+        }
+      }
+    }
+  }
+`;
+
 interface RawArticle {
   id: string;
   title: string;
@@ -52,6 +84,8 @@ interface RawArticle {
   tags: Array<{ content: string }> | null;
   contents: { html: string; markdown: string };
 }
+
+type RawArticleFingerprint = Omit<RawArticle, "contents">;
 
 export class MattersGraphQLError extends Error {
   constructor(message: string, public readonly detail?: unknown) {
@@ -149,6 +183,54 @@ export class MattersClient {
       articles,
     };
   }
+
+  async fetchArticleFingerprints(
+    userName: string,
+    opts: { pageSize?: number; onPage?: (count: number, total: number) => void } = {},
+  ): Promise<MattersUser> {
+    const pageSize = opts.pageSize ?? 50;
+    let cursor: string | null = null;
+    let user: { userName: string; displayName: string } | null = null;
+    let total = 0;
+    const articles: MattersArticle[] = [];
+
+    while (true) {
+      type Resp = {
+        user: {
+          userName: string;
+          displayName: string;
+          articles: {
+            totalCount: number;
+            pageInfo: { hasNextPage: boolean; endCursor: string | null };
+            edges: Array<{ cursor: string; node: RawArticleFingerprint }>;
+          };
+        } | null;
+      };
+      const data: Resp = await this.query<Resp>(USER_ARTICLE_FINGERPRINTS_QUERY, {
+        userName,
+        input: { first: pageSize, after: cursor },
+      });
+      if (!data.user) {
+        throw new MattersGraphQLError(`User not found: @${userName}`);
+      }
+      if (!user) user = { userName: data.user.userName, displayName: data.user.displayName };
+      total = data.user.articles.totalCount;
+      for (const edge of data.user.articles.edges) {
+        articles.push(normalizeArticleFingerprint(edge.node));
+      }
+      opts.onPage?.(articles.length, total);
+      if (!data.user.articles.pageInfo.hasNextPage) break;
+      cursor = data.user.articles.pageInfo.endCursor;
+      if (!cursor) break;
+    }
+
+    return {
+      userName: user!.userName,
+      displayName: user!.displayName,
+      totalCount: total,
+      articles,
+    };
+  }
 }
 
 function extractOperationName(query: string): string | null {
@@ -173,6 +255,27 @@ function normalizeArticle(raw: RawArticle): MattersArticle {
     tags: (raw.tags ?? []).map((t) => t.content).filter(Boolean),
     markdown: raw.contents?.markdown ?? "",
     html: raw.contents?.html ?? "",
+    cover: raw.cover,
+  };
+}
+
+function normalizeArticleFingerprint(raw: RawArticleFingerprint): MattersArticle {
+  return {
+    id: raw.id,
+    title: raw.title,
+    slug: raw.slug,
+    shortHash: raw.shortHash,
+    dataHash: raw.dataHash,
+    mediaHash: raw.mediaHash,
+    iscnId: raw.iscnId && raw.iscnId.length > 0 ? raw.iscnId : null,
+    state: raw.state,
+    license: raw.license ?? null,
+    createdAt: raw.createdAt,
+    revisedAt: raw.revisedAt,
+    summary: raw.summary ?? "",
+    tags: (raw.tags ?? []).map((t) => t.content).filter(Boolean),
+    markdown: "",
+    html: "",
     cover: raw.cover,
   };
 }

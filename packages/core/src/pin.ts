@@ -16,6 +16,13 @@ export interface PinProgress {
   result: PinResult;
 }
 
+export interface PinataUploadResult {
+  name: string;
+  cid: string;
+  size: number;
+  gatewayUrl: string;
+}
+
 export interface PinataClientOptions {
   jwt: string;
   fetchImpl?: typeof fetch;
@@ -40,6 +47,37 @@ export class PinataClient {
       headers: { authorization: `Bearer ${this.jwt}` },
     });
     return res.ok;
+  }
+
+  async uploadPublicFile(file: Blob, name: string): Promise<PinataUploadResult> {
+    const form = new FormData();
+    form.append("file", new File([file], name));
+    form.append("network", "public");
+    form.append("name", name);
+
+    const res = await this.fetchImpl("https://uploads.pinata.cloud/v3/files", {
+      method: "POST",
+      headers: { authorization: `Bearer ${this.jwt}` },
+      body: form,
+    });
+    const body = (await res.json().catch(() => ({}))) as {
+      data?: { cid?: string; size?: number; name?: string };
+      error?: string | { reason?: string; details?: string };
+    };
+    if (!res.ok || !body.data?.cid) {
+      const reason =
+        typeof body.error === "string"
+          ? body.error
+          : body.error?.reason ?? `HTTP ${res.status}`;
+      throw new Error(reason);
+    }
+    const cid = body.data.cid;
+    return {
+      name: body.data.name ?? name,
+      cid,
+      size: body.data.size ?? file.size,
+      gatewayUrl: `https://${cid}.ipfs.dweb.link/`,
+    };
   }
 
   async pinByHash(cid: string, name?: string): Promise<PinResult> {

@@ -52,10 +52,12 @@ export function FlowA({ session, setSession, onGotoB, onGotoC, onBack }: Props) 
     setError(null);
     setRunning(true);
     setLogs([]);
-    addLog(`連線到 ${new URL(getEndpoint(), location.href).host}`);
+    const endpoint = getEndpoint();
+    addLog(`連線到 ${new URL(endpoint, location.href).host}`);
     try {
       const r = await exportUser({
         userName: clean,
+        endpoint,
         includeImages: true,
         onProgress: (p) => {
           setProgress(p);
@@ -98,7 +100,7 @@ export function FlowA({ session, setSession, onGotoB, onGotoC, onBack }: Props) 
 
       <div className="card">
         <h2>🛟 備份流程</h2>
-        <p>輸入你或任何 matters.town 用戶的公開 username，會抓下所有公開文章、圖片，打包成 ZIP。</p>
+        <p>輸入你或任何 Matters 帳號，會整理所有公開文章和圖片，打包成一個壓縮檔。</p>
 
         <div style={{ marginBottom: 12 }}>
           <TextField
@@ -177,10 +179,10 @@ export function FlowA({ session, setSession, onGotoB, onGotoC, onBack }: Props) 
 
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 20 }}>
             <Button variant="primary" onClick={downloadZip}>
-              ⬇️ 下載 ZIP
+              ⬇️ 下載完整備份
             </Button>
             <Button variant="secondary" onClick={onGotoB}>
-              接著：pin 到我的 IPFS →
+              接著：多放一份到自己的保存空間 →
             </Button>
             <Button variant="secondary" onClick={onGotoC}>
               接著：產出可部署站台 →

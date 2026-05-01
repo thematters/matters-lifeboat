@@ -1,6 +1,6 @@
 {
   "name": "@matters/lifeboat-app",
-  "version": "0.1.0",
+  "version": "0.1.5",
   "description": "Matters 救生艇 — the actual tool",
   "private": true,
   "type": "module",

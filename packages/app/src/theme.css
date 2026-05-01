@@ -183,7 +183,7 @@ pre {
 
 .flow-picker {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--sp-4);
   margin-bottom: var(--sp-6);
 }
@@ -227,6 +227,35 @@ pre {
   background: var(--color-grey-grey-hover);
   color: var(--color-grey-black);
 }
+.fingerprint-mini {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  background: var(--color-primary-0);
+  border: 1px solid var(--color-primary-100);
+  border-radius: var(--radius-md);
+  padding: var(--sp-4) var(--sp-5);
+  margin-bottom: var(--sp-5);
+}
+.fingerprint-mini strong {
+  display: block;
+  margin-bottom: 4px;
+}
+.fingerprint-mini p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-grey-grey-darker);
+}
+.mini-link {
+  flex: 0 0 auto;
+  border: 0;
+  background: transparent;
+  color: var(--color-brand-new-purple);
+  font-weight: 700;
+  padding: var(--sp-2);
+}
 
 .trust {
   background: var(--color-info-0);
@@ -240,6 +269,16 @@ pre {
 }
 .trust strong {
   color: var(--color-grey-black);
+}
+
+.simple-steps {
+  margin: 0 0 var(--sp-4);
+  padding-left: 1.4em;
+  line-height: 1.8;
+  font-size: 14px;
+}
+.simple-steps li + li {
+  margin-top: 4px;
 }
 
 .progress-outer {
@@ -360,6 +399,10 @@ pre {
 @media (max-width: 640px) {
   .flow-picker {
     grid-template-columns: 1fr;
+  }
+  .fingerprint-mini {
+    align-items: flex-start;
+    flex-direction: column;
   }
   .app {
     padding: var(--sp-5) var(--sp-4);

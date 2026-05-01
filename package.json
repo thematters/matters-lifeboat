@@ -1,8 +1,8 @@
 {
   "name": "matters-lifeboat",
   "private": true,
-  "version": "0.1.0",
-  "description": "一鍵把你的 matters.town 文章備份、永存、甚至立一個自己的站。Digital sovereignty over your words.",
+  "version": "0.1.5",
+  "description": "給 matters.town 寫作者的開源備份工具。下載完整備份、上傳到 Pinata，或產出自己的靜態網站。",
   "license": "MIT",
   "workspaces": [
     "packages/*"
@@ -12,12 +12,14 @@
     "dev:app": "npm -w @matters/lifeboat-app run dev",
     "dev:landing": "npm -w @matters/lifeboat-landing run dev",
     "dev:worker": "npm -w @matters/lifeboat-worker run dev",
-    "test:headless": "npm -w @matters/lifeboat-core run test:headless"
+    "test:headless": "npm -w @matters/lifeboat-core run test:headless",
+    "test:flow": "npm -w @matters/lifeboat-core run test:flow",
+    "build:embedded-worker": "node scripts/build-embedded-worker.mjs"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mashbean/matters-lifeboat.git"
+    "url": "https://github.com/thematters/matters-lifeboat.git"
   },
-  "author": "mashbean <mashbean@gmail.com>",
+  "author": "Matters Lab",
   "homepage": "https://lifeboat.matters.town"
 }

@@ -1,6 +1,6 @@
 {
   "name": "@matters/lifeboat-core",
-  "version": "0.1.0",
+  "version": "0.1.5",
   "description": "Shared core library: GraphQL client, zip builder, IPFS pin clients.",
   "type": "module",
   "main": "./dist/index.js",
@@ -9,11 +9,13 @@
     ".": "./dist/index.js",
     "./graphql": "./dist/graphql.js",
     "./zip": "./dist/zip.js",
+    "./fingerprint": "./dist/fingerprint.js",
     "./pin": "./dist/pin.js"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test:headless": "tsx src/test-headless.ts"
+    "test:headless": "tsx src/test-headless.ts",
+    "test:flow": "tsx src/test-flow.ts"
   },
   "dependencies": {
     "jszip": "^3.10.1"

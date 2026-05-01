@@ -4,6 +4,7 @@
 > 測試時機：MVP（三流程皆可跑通，但 polish 未完成）
 > 方法：遠端 moderated test，Google Meet 錄影 + screen share；每場 60–75 分鐘。
 > 本計畫目標：在公開上線前，驗證五個最危險的卡關時刻（見 ux-flow.md §3）。
+> 2026-05-01 實測後更新：目前主線改成 `文章地址簿`、`ZIP`、`Pinata 文章地址頁 + ZIP`、`Cloudflare Direct Upload`。
 
 ---
 
@@ -20,10 +21,10 @@
 
 ### P2 — Kevin（32 歲，行銷主管，技術中等）
 - **技術水位**：裝過 Hugo 玩部落格、有 GitHub 帳號但平常不 push、聽過 IPFS 但不會用。
-- **動機**：想試 B 流程，他對 Storacha 有好奇心。
+- **動機**：想試 B 流程，他對把文章地址頁放到 Pinata 有好奇心。
 - **裝置**：MBP 16"，Chrome。
 - **預期主要用：流程 B（可能會嘗試 C）**
-- **我最擔心**：B-3 token 取得步驟太亂、B-5 等 pin 完太久失去耐心
+- **我最擔心**：B-3 token 取得步驟太亂、B-5 等上傳完成太久失去耐心
 
 ### P3 — 學豪（68 歲，前媒體人，寫時事評論）
 - **技術水位**：會用 WordPress 發文、怕「指令」任何東西、不信任雲端輸入 token。
@@ -59,10 +60,10 @@
 | T1 | 請用這個工具備份你 Matters 的所有文章 | ZIP 下載到桌面 | A-1 input 格式 | 她會怎麼輸入 @？是否停頓？ |
 | T2 | 打開 ZIP，找出你 2023 年寫的那篇關於孫子的文章 | 在 `/articles/` 找到 | 檔名 sluggy 難讀 | 她會不會用 Finder 的搜尋？ |
 | T3 | 把 ZIP 傳給你孫子（用 Line） | Line 檔案送出 | 檔案太大 Line 拒收 | 她怎麼反應？ |
-| T4 | 回這個工具的網站，跟我解釋「IPFS 指紋」是什麼 | 說出接近「每篇文章的專屬 ID」 | 她可能直接跳過 | 她會讀 FAQ 嗎？ |
+| T4 | 回這個工具的網站，跟我解釋「IPFS 文章地址」是什麼 | 說出接近「每篇文章的專屬 ID」 | 她可能直接跳過 | 她會讀 FAQ 嗎？ |
 | T5 | 在 landing page 找出「這是不是官方的」答案 | 讀到 Trust section bullet 4 | 可能滾太快 | 滾動速度、眼神停留 |
 | T6 | 重跑一次備份（假設你下週又發了一篇） | 第二次更順 | 是否記得 URL | 會用書籤嗎？ |
-| T7 | 我告訴你有個「永存」更進階，你想試試看嗎？ | 說出為什麼試／不試 | 看到「需要 API token」卻步 | 她的表情 |
+| T7 | 我告訴你有個「保存」更進階，你想試試看嗎？ | 說出為什麼試／不試 | 看到「需要 API token」卻步 | 她的表情 |
 | T8 | 如果這個工具明天就消失，你備份的 ZIP 還在嗎？ | 回答「在，在我電腦裡」 | 無 | 信任感收斂確認 |
 
 ### P2 Kevin（10 題）
@@ -70,12 +71,12 @@
 | # | 任務 | 成功標準 | 預期卡點 | 觀察微互動 |
 |---|---|---|---|---|
 | T1 | 備份你 Matters 帳號 | ZIP 下載 | 幾乎不卡 | 他會探索「進階」選項嗎 |
-| T2 | 把你的文章 pin 到你自己的 Storacha 帳號 | B 流程走完 | B-2 選擇猶豫 | 他讀多久才決定 provider |
-| T3 | 去 Storacha 申請一個 token | 拿到 token 貼回來 | Storacha UI 英文 | 他會在哪個頁面卡住 |
-| T4 | 貼完 token 後，在按下「開始 pin」前，告訴我你覺得會發生什麼 | 說出「會花我配額」 | 可能沒看 dry-run 細節 | 是否展開 CID 清單 |
+| T2 | 把你的文章地址頁和 backup.zip 放到自己的 Pinata | B 流程走完 | B-2 不懂 JWT | 他是否理解「臨時門票」 |
+| T3 | 去 Pinata 申請一個 JWT | 拿到 JWT 貼回來 | Pinata UI 英文 | 他會在哪個頁面卡住 |
+| T4 | 貼完 token 後，在按下「上傳」前，告訴我你覺得會發生什麼 | 說出「會花我配額」 | 可能沒看預覽細節 | 是否理解兩個檔案 |
 | T5 | 中途關掉 tab，再打開，試試看能不能續傳 | 資料不遺失 | resume_url 是否用得出來 | 他找 URL 的路徑 |
-| T6 | 你剛 pin 完，告訴我怎麼把一篇 IPFS 版分享給朋友 | 說出 `<CID>.ipfs.w3s.link` 或去 handoff 找 | 可能不看 handoff | 會不會 scroll handoff |
-| T7 | 假設你明天 token 被 leak 了怎麼辦 | 說出「去 Storacha 撤銷」 | 可能不知道 | 工具有沒有給提示 |
+| T6 | 你剛上傳完，告訴我怎麼把 文章地址頁分享給朋友 | 找到 Pinata gateway URL | 可能不看完成頁 | 會不會 scroll handoff |
+| T7 | 假設你明天 JWT 被 leak 了怎麼辦 | 說出「去 Pinata 刪掉 API key」 | 可能不知道 | 工具有沒有給提示 |
 | T8 | 我追加：你想不想做個網站？走一半覺得不對勁就退出 | 觀察退出路徑 | 退出後 state 是否乾淨 | 中途退出體驗 |
 | T9 | 用 SUS 題組打分 | 完成問卷 | 無 | 他對哪題猶豫 |
 | T10 | 跟我講你最想改的一個地方 | 說出 1 個具體 | 無 | 他第一個抱怨 |
@@ -98,7 +99,7 @@
 
 | # | 任務 | 成功標準 | 預期卡點 | 觀察微互動 |
 |---|---|---|---|---|
-| T1 | 從 landing 直接跳到 C 流程 | 點到「立站」卡 | hero 只有一個 CTA 她會不會找不到 | 滾動深度 |
+| T1 | 從 landing 直接跳到 C 流程 | 點到「架站」卡 | hero 只有一個 CTA 她會不會找不到 | 滾動深度 |
 | T2 | 給你 3 個 template，選一個你接受的 | 選 1 個 | 3 個都醜 | 她的負面表情 |
 | T3 | 走完 C 流程直到網站上線 | 網站可打開 | C-5 等待 3-5 分鐘 | 她做什麼事填空 |
 | T4 | 打開新網站，告訴我最需要改的 3 個視覺問題 | 說出 3 個 | 無 | 她的設計語彙 |
@@ -116,8 +117,8 @@
 | T1 | 「幫我備份 @mashbean 的文章」 | agent 挑 CLI 或 web autostart | 選錯路徑 | 選擇邏輯 |
 | T2 | 用 `npx matters-lifeboat backup` 跑一次 | ZIP 產出 + NDJSON 輸出可解析 | NDJSON 欄位命名 | event schema 漏洞 |
 | T3 | 用 autostart URL 跑 A 流程，中途使用者反悔 | 5 秒 countdown 成功被取消 | countdown 太短 | countdown UX |
-| T4 | 去 `/app/b/pinning?format=json` 拉當下狀態 | 拿到合規 JSON | 欄位不夠 | JSON 完整度 |
-| T5 | 幫使用者完成 B 流程（使用者給你 token） | pinning 完成 | agent 不知道 token 流向 | 信任白皮書清楚度 |
+| T4 | 去 `/app/?flow=b&format=json` 拉當下狀態 | 拿到合規 JSON | 欄位不夠 | JSON 完整度 |
+| T5 | 幫使用者完成 B 流程（使用者給你 JWT） | 文章地址頁與 ZIP 上傳完成 | agent 不知道 JWT 流向 | 信任白皮書清楚度 |
 | T6 | 跑到一半失敗 3 筆，請你重試失敗 | 重試成功或清楚 log 失敗原因 | retry endpoint 不存在 | 錯誤回報 schema |
 | T7 | 使用者問「token 現在存在哪」，agent 怎麼答 | 引用 `/ai.txt` 原文 | ai.txt 描述含糊 | 可追溯性 |
 | T8 | 從上次中斷 resume | resume_url 正確 | id 格式亂 | state 復原 |
@@ -149,9 +150,9 @@
 
 | 未實作功能 | WoZ 替代 | 注意 |
 |---|---|---|
-| B-3 Storacha token 驗證 | 研究員預先備一個公用帳號，給受測者一份 token 紙條；或 fake 一個 validator：輸入任何 `did:key:` 開頭字串都顯示「✅ 5 GB 可用」 | 事後告知受測者是假的，問他們「如果是真的會更緊張嗎」 |
-| B-5 真實 pinning | 背景跑 mock 的 progress generator（每 1.5 秒 +1），真正 CID 只打 5 筆測試 | 觀察「假進度」是否仍讓人焦慮 |
-| C-2 GitHub OAuth | 跳到一個 fake `/oauth/github` 頁面（本地開一個 fake 模擬 GH 授權畫面） | 重點測**心理障礙**不是技術 |
+| B-3 Pinata JWT 驗證 | 研究員預先備一個公用帳號，給受測者一份 JWT 紙條；或 fake 一個 validator：輸入任何 `eyJ` 開頭字串都顯示「可以上傳」 | 事後告知受測者是假的，問他們「如果是真的會更緊張嗎」 |
+| B-5 真實上傳 | 背景跑 mock 的 progress generator，真正檔案只打測試桶 | 觀察「正在上傳文章地址頁 / backup.zip」是否足夠清楚 |
+| C-2 Cloudflare Direct Upload | 跳到 Cloudflare Upload your static files 教學頁或測試帳號 | 重點測 Deploy 是否被漏掉 |
 | C-5 Cloudflare Pages deploy | 替代：5 分鐘假進度 + 真的顯示一個預先 deploy 好的 demo 站 | 測等待焦慮、不測 deploy 本身 |
 | C-6 自訂網域 | 口述：「假設這步你跟著我們的文件做，10 分鐘後會生效」 | 測受測者看到文件的信心 |
 | AI agent `autostart=1` | 真的實作（簡單），5 秒 countdown 即可 | 不用 WoZ |

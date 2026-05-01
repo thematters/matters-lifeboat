@@ -8,12 +8,16 @@ export interface PostFile {
 
 /**
  * Turn a Matters article into a Markdown file with YAML frontmatter.
- * Filename: <YYYY-MM-DD>-<slug>.md
+ * Filename: <YYYY-MM-DD>-<shortHash>.md
+ *
+ * Keep filenames ASCII-only so the ZIP can be safely unarchived by macOS,
+ * Cloudflare, and automation tools. Human-readable titles and original slugs
+ * remain in frontmatter and Markdown content.
  */
 export function articleToPostFile(a: MattersArticle, userName: string): PostFile {
   const date = a.createdAt.slice(0, 10);
   const slug = safeSlug(a.slug);
-  const filename = `posts/${date}-${slug}.md`;
+  const filename = `posts/${date}-${safeAsciiId(a.shortHash || a.id)}.md`;
   const sourceUrl = `https://matters.town/@${userName}/${a.shortHash}-${slug}`;
 
   const frontmatter = toYaml({
@@ -58,6 +62,14 @@ function safeSlug(s: string): string {
     .replace(/\s+/g, "-")
     .replace(/-+/g, "-")
     .slice(0, 120);
+}
+
+function safeAsciiId(s: string): string {
+  return s
+    .replace(/[^a-zA-Z0-9._-]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 80) || "post";
 }
 
 function toYaml(obj: Record<string, unknown>): string {
