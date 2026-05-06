@@ -173,8 +173,13 @@ export function FlowA({ session, setSession, onGotoB, onGotoC, onBack }: Props) 
             </div>
             <div className="stat">
               <div className="v">{result.imageFailures.length}</div>
-              <div className="k">圖片 404</div>
+              <div className="k">找不到的圖片</div>
             </div>
+          </div>
+
+          <div className="callout info" style={{ marginTop: 20 }}>
+            <strong>找不到的圖片：</strong>
+            原圖片網址已經失效，所以無法下載；文章文字、圖片原網址和可下載到的圖片仍會保存在 ZIP 裡。
           </div>
 
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 20 }}>

@@ -109,6 +109,9 @@ export function FlowB({ session, setSession, onBack }: Props) {
             這一步會上傳兩個東西：一張可以打開和分享的「文章地址頁」，
             以及一份完整備份。地址頁給人看，完整備份留給你自己保存。
           </p>
+          <div className="callout info">
+            Pinata 是一個 IPFS 檔案保存服務。
+          </div>
           <div className="trust">
             <strong>流程會分三步，很像把檔案放進雲端硬碟：</strong>
             <br />
