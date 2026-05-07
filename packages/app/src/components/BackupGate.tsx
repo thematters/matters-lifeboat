@@ -89,7 +89,7 @@ export function BackupGate({ title, reason, onComplete, initialUsername = "", ct
             onKeyDown={(e) => e.key === "Enter" && !running && !done && void run()}
             helperText={
               <>
-                支援 <code>@mashbean</code>、<code>mashbean</code>、或整條 matters.town 網址
+                我們支援比如 <code>@mashbean</code>、<code>mashbean</code> 這類 ID、或整條 matters.town 網址
               </>
             }
           />

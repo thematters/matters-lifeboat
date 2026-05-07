@@ -30,7 +30,7 @@ export function LicenseNotice() {
             <strong>對外重新發布原文</strong>：請保留作者署名與來源連結，且不得商用。
           </li>
           <li>
-            <strong>改寫、續寫、翻譯、餵 AI 訓練</strong>：CC BY-NC-ND 與 arr 授權的文章
+            <strong>改寫、續寫、翻譯、餵 AI 訓練</strong>：CC BY-NC-ND 與 All Rights Reserved 授權的文章
             <strong>禁止</strong>；CC0 不受限。
           </li>
         </ul>

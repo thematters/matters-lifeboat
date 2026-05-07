@@ -85,8 +85,8 @@ export function FlowD({ onBack }: Props) {
       <div className="card">
         <h2>🔖 保存文章地址簿</h2>
         <p>
-          如果你現在不想下載完整文章與圖片，可以先保存一份很小的「文章地址簿」。
-          它會列出每篇文章的 Matters 原文連結，以及可點開的 IPFS 連結。
+          如果不想打包全文也沒關係，Matters 本來就有免費替您將文章保存到備份檔案系統 IPFS。
+          你可以先把 Matters 連結與 IPFS 指紋連結打包下來，哪天網站失效了也不用怕。
         </p>
         <div className="trust">
           <strong>這不是完整備份：</strong>

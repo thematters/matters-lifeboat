@@ -37,7 +37,7 @@ export function FlowC({ session, setSession, onBack }: Props) {
           ← 回到選擇
         </button>
         <BackupGate
-          title="🏝️ 做成自己的網站：先備份再產出網站包"
+          title="🏝️ 蓋一個自己的部落格：先備份再產出網站包"
           reason="把備份整理成一個可直接拖到 Cloudflare 的網站資料夾。第一步是抓下備份，輸入 Matters 帳號開始。"
           onComplete={(zip) => setSession({ ...session, zip, user: { userName: zip.manifest.source.userName } as any })}
           ctaLabel="繼續打包成網站 →"

@@ -100,7 +100,7 @@ export function FlowA({ session, setSession, onGotoB, onGotoC, onBack }: Props) 
 
       <div className="card">
         <h2>🍞 備份流程</h2>
-        <p>輸入你或任何 Matters 帳號，會整理所有公開文章和圖片，打包成一個壓縮檔。</p>
+        <p>輸入你的 Matters 帳號，會整理所有公開文章和圖片，打包成一個壓縮檔。</p>
 
         <div style={{ marginBottom: 12 }}>
           <TextField
@@ -111,7 +111,7 @@ export function FlowA({ session, setSession, onGotoB, onGotoC, onBack }: Props) 
             onKeyDown={(e) => e.key === "Enter" && !running && void run()}
             helperText={
               <>
-                支援 <code>@mashbean</code>、<code>mashbean</code>、或整條 matters.town 網址
+                我們支援比如 <code>@mashbean</code>、<code>mashbean</code> 這類 ID、或整條 matters.town 網址
               </>
             }
           />
@@ -195,7 +195,7 @@ export function FlowA({ session, setSession, onGotoB, onGotoC, onBack }: Props) 
           </div>
 
           <div className="callout success" style={{ marginTop: 20 }}>
-            <strong>🌿 備份是好習慣。</strong>
+            <strong>🌿 備份是一種好習慣。</strong>
             你可以之後隨時再回來跑一次，每次都會是一份全新、當下狀態的快照。
           </div>
         </div>

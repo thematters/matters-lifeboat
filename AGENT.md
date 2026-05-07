@@ -181,7 +181,7 @@ URL 參數：
 預設行為：
 
 - 先產生一張可分享的文章地址頁。
-- 上傳文章地址頁到使用者自己的 Pinata。
+- 上傳文章地址頁到使用者自己的分散式空間 Pinata。
 - 再上傳完整 `backup.zip` 到同一個 Pinata。
 - 完成頁會列出兩個 gateway URL：一個方便分享，一個是完整備份。
 
@@ -191,7 +191,7 @@ URL 參數：
 - `pinByHash` 不是預設流程，因為部分免費帳號會回 `PAID_FEATURE_ONLY`。
 - JWT 只存在瀏覽器分頁內；關掉分頁就清掉。用完也可以回 Pinata 刪除 API key。
 
-## 流程 C · 蓋一個自己的站
+## 流程 C · 蓋一個自己的部落格
 
 入口：<https://lifeboat.matters.town/app/?flow=c>
 

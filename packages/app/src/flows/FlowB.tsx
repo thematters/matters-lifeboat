@@ -42,7 +42,7 @@ export function FlowB({ session, setSession, onBack }: Props) {
         </button>
         <BackupGate
           title="⚓ 多放一份：先備份再上傳"
-          reason="先做完整備份，再產生一張可分享的文章地址頁，一起上傳到你的 Pinata。第一步是輸入 Matters 帳號。"
+          reason="先做完整備份，再產生一張可分享的文章地址頁，一起上傳到你的分散式空間 Pinata。第一步是輸入 Matters 帳號。"
           onComplete={(zip) => setSession({ ...session, zip, user: { userName: zip.manifest.source.userName } as any })}
           ctaLabel="繼續設定 Pinata 臨時門票 →"
         />

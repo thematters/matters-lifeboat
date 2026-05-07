@@ -44,7 +44,7 @@ export function App() {
             <span className="lifeboat-name">記憶吐司</span>
           </div>
           <div className="app-subtitle">
-            你的文字，你自己收著 · Your writing, in your own hands
+            你的文字，也可以自己好好收著 · Your writing matters
           </div>
         </div>
         <a
