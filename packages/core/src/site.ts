@@ -182,7 +182,7 @@ function pageShell(title: string, body: string, assetPrefix: string): string {
 </head>
 <body>
   <main>${body}</main>
-  <footer>Backup produced by <a href="https://github.com/thematters/matters-lifeboat">Matters 記憶吐司</a></footer>
+  <footer>由 <a href="https://github.com/thematters/matters-lifeboat">Matters 記憶吐司</a> 備份</footer>
 </body>
 </html>`;
 }

@@ -18,7 +18,7 @@ export function articleToPostFile(a: MattersArticle, userName: string): PostFile
   const date = a.createdAt.slice(0, 10);
   const slug = safeSlug(a.slug);
   const filename = `posts/${date}-${safeAsciiId(a.shortHash || a.id)}.md`;
-  const sourceUrl = `https://matters.town/@${userName}/${a.shortHash}-${slug}`;
+  const sourceUrl = buildMattersArticleUrl(userName, a);
 
   const frontmatter = toYaml({
     title: a.title,
@@ -44,6 +44,14 @@ export function articleToPostFile(a: MattersArticle, userName: string): PostFile
   const body = a.markdown.trim();
   const content = `---\n${frontmatter}---\n\n# ${a.title}\n\n${body}\n`;
   return { slug, filename, content };
+}
+
+export function buildMattersArticleUrl(
+  userName: string,
+  a: Pick<MattersArticle, "shortHash" | "slug">,
+): string {
+  if (a.shortHash) return `https://matters.town/a/${a.shortHash}`;
+  return `https://matters.town/@${userName}/${safeSlug(a.slug)}`;
 }
 
 export function buildGateways(cid: string): string[] {

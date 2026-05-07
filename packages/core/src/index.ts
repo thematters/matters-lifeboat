@@ -1,7 +1,12 @@
 export * from "./types.js";
 export { MattersClient, MattersGraphQLError, DEFAULT_ENDPOINT } from "./graphql.js";
-export { articleToPostFile, buildGateways } from "./frontmatter.js";
-export { extractImageUrls, downloadImages, rewriteMarkdownImages } from "./images.js";
+export { articleToPostFile, buildGateways, buildMattersArticleUrl } from "./frontmatter.js";
+export {
+  extractImageUrls,
+  downloadImages,
+  rewriteMarkdownImages,
+  articleBodyToMarkdown,
+} from "./images.js";
 export { buildExportZip } from "./zip.js";
 export type { ZipResult, BuildZipOptions } from "./zip.js";
 export { PinataClient } from "./pin.js";

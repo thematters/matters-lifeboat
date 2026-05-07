@@ -1,10 +1,10 @@
 import JSZip from "jszip";
 import type { MattersArticle, MattersUser, Manifest } from "./types.js";
-import { articleToPostFile, buildGateways } from "./frontmatter.js";
+import { articleToPostFile, buildGateways, buildMattersArticleUrl } from "./frontmatter.js";
 import {
+  articleBodyToMarkdown,
   downloadImages,
   extractImageUrls,
-  rewriteMarkdownImages,
   type ImageAsset,
 } from "./images.js";
 
@@ -55,7 +55,7 @@ export async function buildExportZip(
     const a = user.articles[i]!;
     const rewrittenArticle: MattersArticle = {
       ...a,
-      markdown: rewriteMarkdownImages(a.markdown, urlToLocal),
+      markdown: articleBodyToMarkdown(a, urlToLocal),
     };
     const post = articleToPostFile(rewrittenArticle, user.userName);
     zip.file(post.filename, post.content);
@@ -71,7 +71,7 @@ export async function buildExportZip(
       createdAt: a.createdAt,
       tags: a.tags,
       file: post.filename,
-      sourceUrl: `https://matters.town/@${user.userName}/${a.shortHash}-${a.slug}`,
+      sourceUrl: buildMattersArticleUrl(user.userName, a),
       ipfsGateways: buildGateways(a.dataHash),
     });
     opts.onProgress?.("packaging", i + 1, user.articles.length);

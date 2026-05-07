@@ -1,6 +1,6 @@
 import JSZip from "jszip";
 import type { FingerprintManifest, MattersUser, Manifest } from "./types.js";
-import { buildGateways } from "./frontmatter.js";
+import { buildGateways, buildMattersArticleUrl } from "./frontmatter.js";
 
 export interface FingerprintArchiveResult {
   blob: Blob;
@@ -108,7 +108,7 @@ export function toFingerprintManifest(
       license: a.license,
       createdAt: a.createdAt,
       tags: a.tags,
-      sourceUrl: `https://matters.town/@${source.userName}/${a.shortHash}-${a.slug}`,
+      sourceUrl: buildMattersArticleUrl(source.userName, a),
       ipfsGateways: buildGateways(a.dataHash),
     })),
     note:

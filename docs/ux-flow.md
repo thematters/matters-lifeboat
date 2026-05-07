@@ -16,6 +16,13 @@
 - Cloudflare 不需要 GitHub。預設只教 `Workers & Pages -> Create application -> Upload your static files -> Deploy`。
 - 面向非技術使用者時，`CID` 解釋為「文章在 IPFS 上的地址 / 指紋」，`JWT` 解釋為「臨時門票」。
 
+## 0.2 正式上線後收到的未來功能
+
+以下需求先列入 backlog，不放進當前主流程，避免讓第一次備份變複雜：
+
+- 只備份使用者已建立的選集。
+- 依日期區間或標籤篩選備份內容。
+
 ## 0. 設計總原則
 
 1. **漸進揭露（progressive disclosure）**：首頁只給三個主選擇；文章地址簿放在主流程下方，作為「還不想完整備份」的輕量入口。
