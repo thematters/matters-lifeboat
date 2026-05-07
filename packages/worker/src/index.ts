@@ -1,5 +1,5 @@
 /**
- * Matters 救生艇 · GraphQL CORS proxy
+ * Matters 記憶吐司 · GraphQL CORS proxy
  *
  * Reason: matters.town's GraphQL server whitelists Access-Control-Allow-Origin
  * to https://matters.town and https://matters.news only. For a third-party

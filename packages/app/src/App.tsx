@@ -40,8 +40,8 @@ export function App() {
               className="brand-wordmark"
             />
             <span className="brand-divider" aria-hidden="true">·</span>
-            <span className="lifeboat-mark" aria-hidden="true">🛟</span>
-            <span className="lifeboat-name">救生艇</span>
+            <span className="lifeboat-mark" aria-hidden="true">🍞</span>
+            <span className="lifeboat-name">記憶吐司</span>
           </div>
           <div className="app-subtitle">
             你的文字，你自己收著 · Your writing, in your own hands
@@ -84,7 +84,7 @@ export function App() {
       )}
 
       <footer className="app-footer">
-        Matters 救生艇 · MIT ·
+        Matters 記憶吐司 · MIT ·
         <a href="https://github.com/thematters/matters-lifeboat" target="_blank" rel="noreferrer">
           &nbsp;source
         </a>

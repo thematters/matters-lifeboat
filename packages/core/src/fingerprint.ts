@@ -144,7 +144,7 @@ function renderFingerprintPage(manifest: FingerprintManifest): string {
 <body>
   <main>
     <section class="hero">
-      <p class="eyebrow">Matters Lifeboat · Article address book</p>
+      <p class="eyebrow">Matters 記憶吐司 · Article address book</p>
       <h1>${escapeHtml(manifest.source.displayName)} 的文章地址</h1>
       <p>
         這不是完整備份，而是一張索引卡：它列出每篇文章在 Matters 的原文連結、
@@ -237,7 +237,7 @@ function buildAgentInstructions(manifest: FingerprintManifest): string {
 
 - 這不是完整文章備份。
 - 不包含圖片檔與 Markdown 內文。
-- 若使用者要完整保存，請回到 Matters Lifeboat 跑完整 ZIP 備份。
+- 若使用者要完整保存，請回到 Matters 記憶吐司 跑完整 ZIP 備份。
 - 若使用者只想公開一張證明清單，可以上傳 \`index.html\` 到 Pinata public IPFS，並分享回傳的 gateway URL。
 `;
 }

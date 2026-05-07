@@ -1,4 +1,4 @@
-# Matters 救生艇 · matters-lifeboat
+# Matters 記憶吐司 · matters-lifeboat
 
 **給 matters.town 寫作者的開源備份工具。**
 
@@ -12,12 +12,12 @@
 
 首頁維持三個主流程，從簡單到完整：
 
-### 🛟 A. 下載完整備份
+### 🍞 A. 下載完整備份
 
 輸入 Matters 帳號，下載一個 ZIP。
 裡面有公開文章、圖片、授權資訊、原始 Matters 連結和 IPFS 文章地址。
 
-不用註冊、不用登入；文章和門票不會被保存到 Lifeboat 伺服器。
+不用註冊、不用登入；文章和門票不會被保存到記憶吐司伺服器。
 
 ### ⚓ B. 放到自己的保存空間
 
@@ -26,7 +26,7 @@
 - 一張可以打開、可以分享的文章地址頁
 - 一份完整備份 ZIP
 
-Pinata 會給你一串很長的臨時門票，正式名稱叫 JWT。Lifeboat 只在這個瀏覽器分頁裡使用它，關掉分頁就清掉。
+Pinata 會給你一串很長的臨時門票，正式名稱叫 JWT。記憶吐司只在這個瀏覽器分頁裡使用它，關掉分頁就清掉。
 
 ### 🏝️ C. 蓋一個自己的站
 
@@ -47,7 +47,7 @@ Pinata 會給你一串很長的臨時門票，正式名稱叫 JWT。Lifeboat 只
 ## 為什麼要做
 
 Matters 長期重視開放網路與創作者的資料主權。
-Matters 文章本來就有 IPFS 地址；救生艇把這些地址、完整備份、Pinata 保存和 Cloudflare 架站整理成一般人也能按完的流程。
+Matters 文章本來就有 IPFS 地址；記憶吐司把這些地址、完整備份、Pinata 保存和 Cloudflare 架站整理成一般人也能按完的流程。
 
 備份是一種好習慣。
 就像照片會存在手機和雲端，文章也可以多留一份在自己手上。
@@ -62,7 +62,7 @@ Matters 文章本來就有 IPFS 地址；救生艇把這些地址、完整備份
 
 如果要交給 AI agent，可以直接說：
 
-> 請用 Matters 救生艇幫我備份 matters 用戶名 XXX。先下載完整備份；如果我要線上保存，再引導我用 Pinata；如果我要架站，再產出 Cloudflare 可上傳的網站包。
+> 請用 Matters 記憶吐司幫我備份 matters 用戶名 XXX。先下載完整備份；如果我要線上保存，再引導我用 Pinata；如果我要架站，再產出 Cloudflare 可上傳的網站包。
 
 ---
 
@@ -85,7 +85,7 @@ server.matters.town/graphql
     └─→ 可選：只下載文章地址簿
 ```
 
-Lifeboat 有一個 Cloudflare Worker proxy，用來解決瀏覽器 CORS 限制。
+記憶吐司有一個 Cloudflare Worker proxy，用來解決瀏覽器 CORS 限制。
 它只轉送 GraphQL JSON 請求，不保存文章、不保存 Pinata 門票，也沒有資料庫。
 
 ---

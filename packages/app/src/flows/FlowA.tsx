@@ -99,7 +99,7 @@ export function FlowA({ session, setSession, onGotoB, onGotoC, onBack }: Props) 
       </button>
 
       <div className="card">
-        <h2>🛟 備份流程</h2>
+        <h2>🍞 備份流程</h2>
         <p>輸入你或任何 Matters 帳號，會整理所有公開文章和圖片，打包成一個壓縮檔。</p>
 
         <div style={{ marginBottom: 12 }}>

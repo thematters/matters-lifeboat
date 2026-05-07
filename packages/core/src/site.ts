@@ -147,7 +147,7 @@ function renderIndex(manifest: Manifest, posts: PostPage[]): string {
     `${name}的文集`,
     `<section class="hero">
       <h1>${name}的文集</h1>
-      <p>共 ${posts.length} 篇。由 <a href="https://matters.town/@${user}">@${user}</a> 在 matters.town 發表，由 <a href="https://github.com/thematters/matters-lifeboat">Matters 救生艇</a> 備份。</p>
+      <p>共 ${posts.length} 篇。由 <a href="https://matters.town/@${user}">@${user}</a> 在 matters.town 發表，由 <a href="https://github.com/thematters/matters-lifeboat">Matters 記憶吐司</a> 備份。</p>
     </section>
     <ol class="post-list">${items}</ol>`,
     "",
@@ -182,7 +182,7 @@ function pageShell(title: string, body: string, assetPrefix: string): string {
 </head>
 <body>
   <main>${body}</main>
-  <footer>Backup produced by <a href="https://github.com/thematters/matters-lifeboat">Matters 救生艇</a></footer>
+  <footer>Backup produced by <a href="https://github.com/thematters/matters-lifeboat">Matters 記憶吐司</a></footer>
 </body>
 </html>`;
 }

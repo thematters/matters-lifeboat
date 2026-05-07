@@ -117,7 +117,7 @@ export function FlowB({ session, setSession, onBack }: Props) {
             <br />
             ① 從 Pinata 複製一張臨時門票
             <br />
-            ② Lifeboat 測試這張門票能不能用
+            ② 記憶吐司測試這張門票能不能用
             <br />
             ③ 你按「上傳」後，Pinata 回傳可分享連結
           </div>
@@ -152,7 +152,7 @@ export function FlowB({ session, setSession, onBack }: Props) {
           </ol>
           <div className="trust">
             <strong>安全提醒：</strong>
-            這串字只放在這個瀏覽器分頁裡，關掉分頁就清掉；它不會送到 Lifeboat 伺服器。
+            這串字只放在這個瀏覽器分頁裡，關掉分頁就清掉；它不會送到記憶吐司伺服器。
           </div>
           <TextField
             multiline

@@ -1,15 +1,15 @@
-# AGENT.md — Matters 救生艇 AI Agent 操作手冊
+# AGENT.md — Matters 記憶吐司 AI Agent 操作手冊
 
 > 給 Claude / ChatGPT / Cursor / 任何代為操作的 AI agent。
 > 使用者請你協助備份、保存或重建一份 matters.town 文章時，這份手冊就是你的工作說明書。
 
 ## 你是誰，這個工具是什麼
 
-**Matters 救生艇**是 [matters.town](https://matters.town) 寫作者的開源備份工具。
+**Matters 記憶吐司**是 [matters.town](https://matters.town) 寫作者的開源備份工具。
 它可以把公開文章、圖片、授權資訊、原始連結和 IPFS 文章地址打包成一份可離線保存的 ZIP，也能進一步上傳到 Pinata，或做成可部署到 Cloudflare 的靜態網站。
 
 使用者不需要 Matters 登入。
-打包在瀏覽器裡完成；Lifeboat 沒有保存文章或 Pinata 門票的資料庫。
+打包在瀏覽器裡完成；記憶吐司沒有保存文章或 Pinata 門票的資料庫。
 
 首頁只有三個主流程，另有一個輔助入口：
 
@@ -40,7 +40,7 @@ B 和 C 會在沒有 ZIP 時自動先跑 A。
 
 **你可以直接這樣對使用者說：**
 
-> 開 https://lifeboat.matters.town/app/?flow=a&user=你的帳號&autostart=1，等網頁打包完成後下載 ZIP。整個過程在你的瀏覽器裡進行；Lifeboat 不保存你的文章。
+> 開 https://lifeboat.matters.town/app/?flow=a&user=你的帳號&autostart=1，等網頁打包完成後下載 ZIP。整個過程在你的瀏覽器裡進行；記憶吐司不保存你的文章。
 
 ## CLI 備案
 
@@ -220,7 +220,7 @@ URL 參數：
 ## 隱私與信任承諾
 
 - 所有文章整理與打包都在使用者瀏覽器內完成。
-- Lifeboat 沒有保存文章、圖片或 Pinata JWT 的資料庫。
+- 記憶吐司沒有保存文章、圖片或 Pinata JWT 的資料庫。
 - Cloudflare Worker 只做 CORS 轉送，不保存內容。
 - Pinata / Cloudflare API token 只存在當前分頁；關掉就清空。
 - 程式碼 MIT 授權，開源在 [thematters/matters-lifeboat](https://github.com/thematters/matters-lifeboat)。
@@ -238,4 +238,4 @@ URL 參數：
 
 ---
 
-Matters 救生艇 · [thematters/matters-lifeboat](https://github.com/thematters/matters-lifeboat) · MIT
+Matters 記憶吐司 · [thematters/matters-lifeboat](https://github.com/thematters/matters-lifeboat) · MIT
