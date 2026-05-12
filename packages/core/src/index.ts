@@ -24,10 +24,10 @@ import { MattersClient } from "./graphql.js";
 import { buildExportZip } from "./zip.js";
 import { buildFingerprintArchive as createFingerprintArchive } from "./fingerprint.js";
 import type {
-  ExportOptions,
+  ExportUserOptions,
   ExportProgress,
   FingerprintOptions,
-  FingerprintProgress,
+  FingerprintProgress, ExportCollectionOptions,
 } from "./types.js";
 import type { ZipResult } from "./zip.js";
 import type { FingerprintArchiveResult } from "./fingerprint.js";
@@ -35,7 +35,7 @@ import type { FingerprintArchiveResult } from "./fingerprint.js";
 /**
  * End-to-end: fetch all articles for a user and build the export zip.
  */
-export async function exportUser(opts: ExportOptions): Promise<ZipResult> {
+export async function exportUser(opts: ExportUserOptions): Promise<ZipResult> {
   const emit = (p: ExportProgress) => opts.onProgress?.(p);
   emit({ phase: "init", current: 0, total: 0, message: `開始備份 @${opts.userName}` });
 
@@ -76,37 +76,112 @@ export async function exportUser(opts: ExportOptions): Promise<ZipResult> {
   return result;
 }
 
+/**
+ * End-to-end: fetch all articles for a collection and build the export zip.
+ */
+export async function exportCollection(opts: ExportCollectionOptions): Promise<ZipResult> {
+  const emit = (p: ExportProgress) => opts.onProgress?.(p);
+  emit({ phase: "init", current: 0, total: 0, message: `開始備份選集 ${opts.collectionId}` });
+
+  const client = new MattersClient({ endpoint: opts.endpoint });
+  emit({ phase: "fetching-metadata", current: 0, total: 0, message: "連線到 matters.town…" });
+
+  const collection = await client.fetchAllArticlesInCollection(opts.collectionId, {
+    pageSize: opts.pageSize ?? 50,
+    onPage: (cur, total) =>
+    emit({
+      phase: "fetching-articles",
+      current: cur,
+      total,
+      message: `已取得 ${cur} / ${total} 篇文章`,
+    }),
+  });
+
+  const result = await buildExportZip(collection, {
+    includeImages: opts.includeImages ?? true,
+    onProgress: (phase, done, total) =>
+    emit({
+      phase: phase === "packaging" ? "packaging" : "downloading-images",
+      current: done,
+      total,
+      message:
+      phase === "downloading-images"
+      ? `下載圖片 ${done} / ${total}`
+      : `打包檔案 ${done} / ${total}`,
+    }),
+  });
+
+  emit({
+    phase: "done",
+    current: collection.articles.length,
+    total: collection.articles.length,
+    message: `完成 · ${collection.articles.length} 篇 · ${(result.bytes.length / 1024 / 1024).toFixed(2)} MB`,
+  });
+  return result;
+}
+
 export async function exportFingerprints(
   opts: FingerprintOptions,
 ): Promise<FingerprintArchiveResult> {
   const emit = (p: FingerprintProgress) => opts.onProgress?.(p);
-  emit({ phase: "init", current: 0, total: 0, message: `開始整理 @${opts.userName} 的文章地址簿` });
-
   const client = new MattersClient({ endpoint: opts.endpoint });
-  const user = await client.fetchArticleFingerprints(opts.userName, {
-    pageSize: opts.pageSize ?? 50,
-    onPage: (cur, total) =>
+  if (opts.collectionId == null) {
+    emit({ phase: "init", current: 0, total: 0, message: `開始整理 @${opts.userName} 的文章地址簿` });
+
+    const user = await client.fetchArticleFingerprints(opts.userName, {
+      pageSize: opts.pageSize ?? 50,
+      onPage: (cur, total) =>
       emit({
         phase: "fetching-articles",
         current: cur,
         total,
         message: `已取得 ${cur} / ${total} 篇文章地址`,
       }),
-  });
+    });
 
-  emit({
-    phase: "packaging",
-    current: user.articles.length,
-    total: user.articles.length,
-    message: "正在產生 HTML / JSON / CSV 文章地址簿",
-  });
-  const result = await createFingerprintArchive(user);
+    emit({
+      phase: "packaging",
+      current: user.articles.length,
+      total: user.articles.length,
+      message: "正在產生 HTML / JSON / CSV 文章地址簿",
+    });
+    const result = await createFingerprintArchive(user);
 
-  emit({
-    phase: "done",
-    current: user.articles.length,
-    total: user.articles.length,
-    message: `完成 · ${user.articles.length} 篇 · ${(result.bytes.length / 1024).toFixed(1)} KB`,
-  });
-  return result;
+    emit({
+      phase: "done",
+      current: user.articles.length,
+      total: user.articles.length,
+      message: `完成 · ${user.articles.length} 篇 · ${(result.bytes.length / 1024).toFixed(1)} KB`,
+    });
+    return result;
+  } else {
+    emit({ phase: "init", current: 0, total: 0, message: `開始整理選集 ${opts.collectionId} 的文章地址簿` });
+
+    const collection = await client.fetchArticleFingerprintsInCollection(opts.collectionId, {
+      pageSize: opts.pageSize ?? 50,
+      onPage: (cur, total) =>
+      emit({
+        phase: "fetching-articles",
+        current: cur,
+        total,
+        message: `已取得 ${cur} / ${total} 篇文章地址`,
+      }),
+    });
+
+    emit({
+      phase: "packaging",
+      current: collection.articles.length,
+      total: collection.articles.length,
+      message: "正在產生 HTML / JSON / CSV 文章地址簿",
+    });
+    const result = await createFingerprintArchive(collection);
+
+    emit({
+      phase: "done",
+      current: collection.articles.length,
+      total: collection.articles.length,
+      message: `完成 · ${collection.articles.length} 篇 · ${(0 / 1024).toFixed(1)} KB`,
+    });
+    return result;
+  }
 }

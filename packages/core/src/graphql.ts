@@ -1,4 +1,8 @@
-import type { MattersArticle, MattersUser } from "./types.js";
+import type {
+  MattersArticle,
+  MattersCollection,
+  MattersUser
+} from "./types.js";
 
 export const DEFAULT_ENDPOINT = "https://server.matters.town/graphql";
 
@@ -35,6 +39,46 @@ const USER_ARTICLES_QUERY = `
   }
 `;
 
+const COLLECTION_ARTICLES_QUERY = `
+  query CollectionArticles($id: ID!, $input: CollectionArticlesInput!) {
+     node(input: { id: $id }) {
+      id
+      ... on Collection {
+        title
+        description
+        author {
+          userName
+          displayName
+        }
+        articles(input: $input) {
+          totalCount
+          pageInfo { hasNextPage endCursor }
+          edges {
+            cursor
+            node {
+              id
+              title
+              slug
+              shortHash
+              dataHash
+              mediaHash
+              iscnId
+              state
+              license
+              createdAt
+              revisedAt
+              summary
+              cover
+              tags { content }
+              contents { html markdown }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 const USER_ARTICLE_FINGERPRINTS_QUERY = `
   query UserArticleFingerprints($userName: String!, $input: UserArticlesInput!) {
     user(input: { userName: $userName }) {
@@ -60,6 +104,45 @@ const USER_ARTICLE_FINGERPRINTS_QUERY = `
             summary
             cover
             tags { content }
+          }
+        }
+      }
+    }
+  }
+`;
+
+const COLLECTION_ARTICLE_FINGERPRINTS_QUERY = `
+  query CollectionArticleFingerprints($id: ID!, $input: CollectionArticlesInput!) {
+    node(input: { id: $id }) {
+      id
+      ... on Collection {
+        title
+        description
+        author {
+          userName
+          displayName
+        }
+        articles(input: $input) {
+          totalCount
+          pageInfo { hasNextPage endCursor }
+          edges {
+            cursor
+            node {
+              id
+              title
+              slug
+              shortHash
+              dataHash
+              mediaHash
+              iscnId
+              state
+              license
+              createdAt
+              revisedAt
+              summary
+              cover
+              tags { content }
+            }
           }
         }
       }
@@ -184,6 +267,76 @@ export class MattersClient {
     };
   }
 
+  async fetchAllArticlesInCollection(
+    collectionId: string,
+    opts: { pageSize?: number; onPage?: (count: number, total: number) => void } = {},
+  ): Promise<MattersCollection> {
+    const pageSize = opts.pageSize ?? 50;
+    let cursor: string | null = null;
+    let collection: {
+      title: string;
+      description: string;
+      author: {
+        userName: string;
+        displayName: string;
+      }
+    } | null = null;
+    let total = 0;
+    const articles: MattersArticle[] = [];
+
+    while (true) {
+      type Resp = {
+        node: {
+          title: string;
+          description: string;
+          author: {
+            userName: string;
+            displayName: string;
+          }
+          articles: {
+            totalCount: number;
+            pageInfo: { hasNextPage: boolean; endCursor: string | null };
+            edges: Array<{ cursor: string; node: RawArticle }>;
+          };
+        } | null;
+      };
+      const data: Resp = await this.query<Resp>(COLLECTION_ARTICLES_QUERY, {
+        id: collectionId,
+        input: { first: pageSize, after: cursor },
+      });
+      if (!data.node) {
+        throw new MattersGraphQLError(`Collection not found: @${collectionId}`);
+      }
+      if (!collection) collection = {
+        title: data.node.title,
+        description: data.node.description,
+        author: {
+          userName: data.node.author.userName,
+          displayName: data.node.author.displayName,
+        }
+      };
+      total = data.node.articles.totalCount;
+      for (const edge of data.node.articles.edges) {
+        articles.push(normalizeArticle(edge.node));
+      }
+      opts.onPage?.(articles.length, total);
+      if (!data.node.articles.pageInfo.hasNextPage) break;
+      cursor = data.node.articles.pageInfo.endCursor;
+      if (!cursor) break;
+    }
+
+    return {
+      title: collection!.title,
+      description: collection!.description,
+      author: {
+        userName: collection!.author.userName,
+        displayName: collection!.author.displayName,
+      },
+      totalCount: total,
+      articles,
+    };
+  }
+
   async fetchArticleFingerprints(
     userName: string,
     opts: { pageSize?: number; onPage?: (count: number, total: number) => void } = {},
@@ -227,6 +380,76 @@ export class MattersClient {
     return {
       userName: user!.userName,
       displayName: user!.displayName,
+      totalCount: total,
+      articles,
+    };
+  }
+
+  async fetchArticleFingerprintsInCollection(
+    collectionId: string,
+    opts: { pageSize?: number; onPage?: (count: number, total: number) => void } = {},
+  ): Promise<MattersCollection> {
+    const pageSize = opts.pageSize ?? 50;
+    let cursor: string | null = null;
+    let collection: {
+      title: string;
+      description: string;
+      author: {
+        userName: string;
+        displayName: string;
+      }
+    } | null = null;
+    let total = 0;
+    const articles: MattersArticle[] = [];
+
+    while (true) {
+      type Resp = {
+        node: {
+          title: string;
+          description: string;
+          author: {
+            userName: string;
+            displayName: string;
+          }
+          articles: {
+            totalCount: number;
+            pageInfo: { hasNextPage: boolean; endCursor: string | null };
+            edges: Array<{ cursor: string; node: RawArticleFingerprint }>;
+          };
+        } | null;
+      };
+      const data: Resp = await this.query<Resp>(COLLECTION_ARTICLE_FINGERPRINTS_QUERY, {
+        id: collectionId,
+        input: { first: pageSize, after: cursor },
+      });
+      if (!data.node) {
+        throw new MattersGraphQLError(`Collection not found: @${collectionId}`);
+      }
+      if (!collection) collection = {
+        title: data.node.title,
+        description: data.node.description,
+        author: {
+          userName: data.node.author.userName,
+          displayName: data.node.author.displayName,
+        }
+      };
+      total = data.node.articles.totalCount;
+      for (const edge of data.node.articles.edges) {
+        articles.push(normalizeArticleFingerprint(edge.node));
+      }
+      opts.onPage?.(articles.length, total);
+      if (!data.node.articles.pageInfo.hasNextPage) break;
+      cursor = data.node.articles.pageInfo.endCursor;
+      if (!cursor) break;
+    }
+
+    return {
+      title: collection!.title,
+      description: collection!.description,
+      author: {
+        userName: collection!.author.userName,
+        displayName: collection!.author.displayName,
+      },
       totalCount: total,
       articles,
     };

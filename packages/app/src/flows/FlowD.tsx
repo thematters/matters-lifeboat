@@ -31,12 +31,13 @@ export function FlowD({ onBack }: Props) {
   };
 
   async function run() {
-    const clean = normalizeUsername(username);
-    if (!clean) {
-      setError("請輸入有效的 matters.town 用戶名");
+    const normalizedInput = normalizeInputText(username);
+    if (!normalizedInput) {
+      setError("請輸入有效的 matters.town 用戶名/選集");
       return;
     }
-    setUsername(clean);
+    // Only set normalized username if only username captured
+    if (!normalizedInput.collectionId) setUsername(normalizedInput.username);
     setRunning(true);
     setResult(null);
     setError(null);
@@ -44,7 +45,8 @@ export function FlowD({ onBack }: Props) {
     addLog("開始整理文章地址");
     try {
       const r = await exportFingerprints({
-        userName: clean,
+        userName: normalizedInput.username,
+        collectionId: normalizedInput.collectionId,
         endpoint: getEndpoint(),
         onProgress: (p) => {
           setProgress(p);
@@ -102,7 +104,7 @@ export function FlowD({ onBack }: Props) {
           onKeyDown={(e) => e.key === "Enter" && !running && void run()}
           helperText={
             <>
-              這一步不下載圖片，也不備份全文；只整理既有連結。
+              這一步不下載圖片，也不備份全文；只整理既有連結。(<code>@mashbean</code> / <code>mashbean</code> / 整條 matters.town 用戶/選集網址)
             </>
           }
         />
@@ -199,4 +201,20 @@ function normalizeUsername(raw: string): string | null {
   }
   if (s.startsWith("@")) return s.slice(1);
   return s.replace(/[^\w.-]/g, "");
+}
+
+function normalizeInputText(raw: string): {username: string, collectionId?: string} | null {
+  const s = raw.trim();
+  if (!s) return null;
+  const collectionMatchData = s.match(/^https?:\/\/matters\.town\/@(\w+)\/collections\/(\w+)$/)
+  if (!collectionMatchData) {
+    const maybeNormalizedUsername = normalizeUsername(raw)
+    return maybeNormalizedUsername ? {
+      username: maybeNormalizedUsername,
+    } : null
+  }
+  return {
+    username: collectionMatchData![1]!,
+    collectionId: collectionMatchData![2]!,
+  }
 }

@@ -1,5 +1,10 @@
 import JSZip from "jszip";
-import type { FingerprintManifest, MattersUser, Manifest } from "./types.js";
+import type {
+  FingerprintManifest,
+  MattersUser,
+  Manifest,
+  MattersCollection,
+} from "./types.js";
 import { buildGateways, buildMattersArticleUrl } from "./frontmatter.js";
 
 export interface FingerprintArchiveResult {
@@ -16,7 +21,7 @@ export interface FingerprintPageResult {
 }
 
 export async function buildFingerprintArchive(
-  source: MattersUser | Manifest | FingerprintManifest,
+  source: MattersUser | MattersCollection | Manifest | FingerprintManifest,
 ): Promise<FingerprintArchiveResult> {
   const manifest = toFingerprintManifest(source);
   const zip = new JSZip();
@@ -48,7 +53,7 @@ export function buildFingerprintPage(
 }
 
 export function toFingerprintManifest(
-  source: MattersUser | Manifest | FingerprintManifest,
+  source: MattersUser | MattersCollection | Manifest | FingerprintManifest,
 ): FingerprintManifest {
   if ("schema" in source && source.schema === "matters-lifeboat-fingerprints/v1") {
     return source;
@@ -80,6 +85,40 @@ export function toFingerprintManifest(
       })),
       note:
         "這是一份文章地址簿，不是完整備份。它保留每篇文章的 CID 與可查驗連結，方便先把文章索引掌握在自己手上。",
+    };
+  }
+
+  if ("author" in source) {
+    return {
+      schema: "matters-lifeboat-fingerprints/v1",
+      exportedAt: new Date().toISOString(),
+      source: {
+        platform: "matters.town",
+        endpoint: "https://server.matters.town/graphql",
+        userName: source.author.userName,
+        displayName: source.author.displayName,
+      },
+      stats: {
+        totalArticles: source.articles.length,
+        activeArticles: source.articles.filter((a) => a.state === "active").length,
+        totalFingerprints: source.articles.filter((a) => Boolean(a.dataHash)).length,
+      },
+      articles: source.articles.map((a) => ({
+        slug: a.slug,
+        title: a.title,
+        shortHash: a.shortHash,
+        dataHash: a.dataHash,
+        mediaHash: a.mediaHash,
+        iscnId: a.iscnId,
+        state: a.state,
+        license: a.license,
+        createdAt: a.createdAt,
+        tags: a.tags,
+        sourceUrl: buildMattersArticleUrl(source.author.userName, a),
+        ipfsGateways: buildGateways(a.dataHash),
+      })),
+      note:
+      "這是一份文章地址簿，不是完整備份。它保留每篇文章的 CID 與可查驗連結，方便先把文章索引掌握在自己手上。",
     };
   }
 
