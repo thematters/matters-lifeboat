@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { exportUser, type ExportProgress, type ZipResult } from "@matters/lifeboat-core";
+import { exportUser, exportCollection, type ExportProgress, type ZipResult } from "@matters/lifeboat-core";
 import { getEndpoint } from "../api";
 import { LicenseNotice } from "../components/LicenseNotice";
 import { Button } from "../components/Button";
@@ -19,6 +19,7 @@ export function FlowA({ session, setSession, onGotoB, onGotoC, onBack }: Props) 
   const [username, setUsername] = useState(
     () => new URL(location.href).searchParams.get("user") ?? "",
   );
+  const [inputCollectionId, setInputCollectionId] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
   const [progress, setProgress] = useState<ExportProgress | null>(null);
   const [result, setResult] = useState<ZipResult | null>(session.zip ?? null);
@@ -43,34 +44,55 @@ export function FlowA({ session, setSession, onGotoB, onGotoC, onBack }: Props) 
   }, [username]);
 
   async function run() {
-    const clean = normalizeUsername(username);
-    if (!clean) {
-      setError("請輸入有效的 matters.town 用戶名");
+    const normalizedInput = normalizeInputText(username);
+    if (!normalizedInput) {
+      setError("請輸入有效的 matters.town 用戶名/選集");
       return;
     }
-    setUsername(clean);
+    // Only set normalized username if only username captured
+    if (!normalizedInput.collectionId) setUsername(normalizedInput.username);
     setError(null);
     setRunning(true);
     setLogs([]);
     const endpoint = getEndpoint();
     addLog(`連線到 ${new URL(endpoint, location.href).host}`);
     try {
-      const r = await exportUser({
-        userName: clean,
-        endpoint,
-        includeImages: true,
-        onProgress: (p) => {
-          setProgress(p);
-          if (p.current === 0 || p.current === p.total || p.current % 10 === 0) {
-            addLog(`[${p.phase}] ${p.message}`);
-          }
-        },
-      });
-      setResult(r);
-      setSession({ ...session, zip: r, user: { userName: clean } as any });
-      addLog(
-        `完成：${r.manifest.stats.totalArticles} 篇 / ${r.manifest.stats.totalImages} 張圖 / ${fmtMB(r.bytes.length)}`,
-      );
+      if (normalizedInput.collectionId) {
+        const r = await exportCollection({
+          collectionId: normalizedInput.collectionId,
+          endpoint,
+          includeImages: true,
+          onProgress: (p) => {
+            setProgress(p);
+            if (p.current === 0 || p.current === p.total || p.current % 10 === 0) {
+              addLog(`[${p.phase}] ${p.message}`);
+            }
+          },
+        });
+        setInputCollectionId(normalizedInput.collectionId);
+        setResult(r);
+        addLog(
+          `完成：${r.manifest.stats.totalArticles} 篇 / ${r.manifest.stats.totalImages} 張圖 / ${fmtMB(r.bytes.length)}`,
+        );
+      } else {
+        const r = await exportUser({
+          userName: normalizedInput.username,
+          endpoint,
+          includeImages: true,
+          onProgress: (p) => {
+            setProgress(p);
+            if (p.current === 0 || p.current === p.total || p.current % 10 === 0) {
+              addLog(`[${p.phase}] ${p.message}`);
+            }
+          },
+        });
+        setInputCollectionId(null);
+        setResult(r);
+        setSession({ ...session, zip: r, user: { userName: normalizedInput.username } as any });
+        addLog(
+          `完成：${r.manifest.stats.totalArticles} 篇 / ${r.manifest.stats.totalImages} 張圖 / ${fmtMB(r.bytes.length)}`,
+        );
+      }
     } catch (e) {
       const msg = (e as Error).message;
       setError(msg);
@@ -186,12 +208,16 @@ export function FlowA({ session, setSession, onGotoB, onGotoC, onBack }: Props) 
             <Button variant="primary" onClick={downloadZip}>
               ⬇️ 下載完整備份
             </Button>
-            <Button variant="secondary" onClick={onGotoB}>
-              接著：多放一份到自己的保存空間 →
-            </Button>
-            <Button variant="secondary" onClick={onGotoC}>
-              接著：產出可部署站台 →
-            </Button>
+            {inputCollectionId == null && (
+              <>
+                <Button variant="secondary" onClick={onGotoB}>
+                  接著：多放一份到自己的保存空間 →
+                </Button>
+                <Button variant="secondary" onClick={onGotoC}>
+                  接著：產出可部署站台 →
+                </Button>
+              </>
+            )}
           </div>
 
           <div className="callout success" style={{ marginTop: 20 }}>
@@ -219,6 +245,22 @@ function normalizeUsername(raw: string): string | null {
   }
   if (s.startsWith("@")) return s.slice(1);
   return s.replace(/[^\w.-]/g, "");
+}
+
+function normalizeInputText(raw: string): {username: string, collectionId?: string} | null {
+  const s = raw.trim();
+  if (!s) return null;
+  const collectionMatchData = s.match(/^https?:\/\/matters\.town\/@(\w+)\/collections\/(\w+)$/)
+  if (!collectionMatchData) {
+    const maybeNormalizedUsername = normalizeUsername(raw)
+    return maybeNormalizedUsername ? {
+      username: maybeNormalizedUsername,
+    } : null
+  }
+  return {
+    username: collectionMatchData![1]!,
+    collectionId: collectionMatchData![2]!,
+  }
 }
 
 function fmtMB(bytes: number): string {

@@ -31,8 +31,27 @@ export interface MattersUser {
   articles: MattersArticle[];
 }
 
-export interface ExportOptions {
+export interface MattersCollection {
+  title: string;
+  description: string;
+  author: {
+    userName: string;
+    displayName: string;
+  }
+  totalCount: number;
+  articles: MattersArticle[];
+}
+
+export interface ExportUserOptions {
   userName: string;
+  endpoint?: string;
+  pageSize?: number;
+  includeImages?: boolean;
+  onProgress?: (progress: ExportProgress) => void;
+}
+
+export interface ExportCollectionOptions {
+  collectionId: string;
   endpoint?: string;
   pageSize?: number;
   includeImages?: boolean;
@@ -48,6 +67,7 @@ export interface ExportProgress {
 
 export interface FingerprintOptions {
   userName: string;
+  collectionId?: string | undefined;
   endpoint?: string;
   pageSize?: number;
   onProgress?: (progress: FingerprintProgress) => void;

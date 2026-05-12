@@ -1,5 +1,10 @@
 import JSZip from "jszip";
-import type { MattersArticle, MattersUser, Manifest } from "./types.js";
+import type {
+  MattersArticle,
+  MattersUser,
+  Manifest,
+  MattersCollection
+} from "./types.js";
 import { articleToPostFile, buildGateways, buildMattersArticleUrl } from "./frontmatter.js";
 import {
   articleBodyToMarkdown,
@@ -22,17 +27,19 @@ export interface ZipResult {
 }
 
 export async function buildExportZip(
-  user: MattersUser,
+  source: MattersUser | MattersCollection,
   opts: BuildZipOptions = {},
 ): Promise<ZipResult> {
   const includeImages = opts.includeImages ?? true;
   const zip = new JSZip();
+  const userName = "author" in source ? source.author.userName : source.userName
+  const displayName = "author" in source ? source.author.displayName : source.displayName
 
   // Collect images upfront so frontmatter rewrites work.
   const urlToLocal = new Map<string, string>();
   const allImageUrls = new Set<string>();
   if (includeImages) {
-    for (const a of user.articles) {
+    for (const a of source.articles) {
       for (const u of extractImageUrls(a)) allImageUrls.add(u);
     }
   }
@@ -51,13 +58,13 @@ export async function buildExportZip(
 
   // Write post markdown with rewritten image paths.
   const articlesMeta: Manifest["articles"] = [];
-  for (let i = 0; i < user.articles.length; i++) {
-    const a = user.articles[i]!;
+  for (let i = 0; i < source.articles.length; i++) {
+    const a = source.articles[i]!;
     const rewrittenArticle: MattersArticle = {
       ...a,
       markdown: articleBodyToMarkdown(a, urlToLocal),
     };
-    const post = articleToPostFile(rewrittenArticle, user.userName);
+    const post = articleToPostFile(rewrittenArticle, userName);
     zip.file(post.filename, post.content);
     articlesMeta.push({
       slug: a.slug,
@@ -71,10 +78,10 @@ export async function buildExportZip(
       createdAt: a.createdAt,
       tags: a.tags,
       file: post.filename,
-      sourceUrl: buildMattersArticleUrl(user.userName, a),
+      sourceUrl: buildMattersArticleUrl(userName, a),
       ipfsGateways: buildGateways(a.dataHash),
     });
-    opts.onProgress?.("packaging", i + 1, user.articles.length);
+    opts.onProgress?.("packaging", i + 1, source.articles.length);
   }
 
   // Write images.
@@ -90,12 +97,12 @@ export async function buildExportZip(
     source: {
       platform: "matters.town",
       endpoint: "https://server.matters.town/graphql",
-      userName: user.userName,
-      displayName: user.displayName,
+      userName,
+      displayName,
     },
     stats: {
-      totalArticles: user.articles.length,
-      activeArticles: user.articles.filter((a) => a.state === "active").length,
+      totalArticles: source.articles.length,
+      activeArticles: source.articles.filter((a) => a.state === "active").length,
       totalImages: imageAssets.length,
       totalBytes,
     },
